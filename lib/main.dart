@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:wvsu_iuis_v2/features/enrollment_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -10,15 +11,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('WVSU IUIS v2'),
-          backgroundColor: Colors.blue, 
-        ),
-        body: Center(
-          child: const Text('Hello World'),
-        ),
-      ),
+      home: const EnrollmentPage(),
     );
   }
 }

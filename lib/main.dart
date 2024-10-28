@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:wvsu_iuis_v2/features/login_page.dart';
+import 'package:wvsu_iuis_v2/features/account.dart';
 
 void main() {
   runApp(const MyApp());

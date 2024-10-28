@@ -56,7 +56,7 @@ class signUp extends StatelessWidget {
               ),
               keyboardType: TextInputType.emailAddress,
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 16), // for spacing between widgets
 
             // pass
             TextFormField(

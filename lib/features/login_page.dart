@@ -50,7 +50,6 @@ class _SignInState extends State<SignIn> with SingleTickerProviderStateMixin {
     return Scaffold(
       body: Row(
         children: [
-          // Left side: form fields
           Expanded(
             flex: 1,
             child: Padding(
@@ -195,7 +194,6 @@ class _SignInState extends State<SignIn> with SingleTickerProviderStateMixin {
             ),
           ),
 
-          // Right side: background image or placeholder
           Expanded(
             flex: 1,
             child: Container(

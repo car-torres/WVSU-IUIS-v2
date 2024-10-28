@@ -11,25 +11,25 @@ class EnrollmentPage extends StatelessWidget {
       ),
       body: ListView(
         children: [
-          // First Container with "Hello World" text
+          // First Container
           Padding(
-            padding: const EdgeInsets.all(12), // Add 12 pixels of padding
+            padding: const EdgeInsets.all(12),
             child: Container(
-              height: 100, // Set height for the container
+              height: 100,
               decoration: BoxDecoration(
                 color: const Color.fromARGB(255, 211, 211, 211),
-                borderRadius: const BorderRadius.all(Radius.circular(12)), // Rounded corners
+                borderRadius: const BorderRadius.all(Radius.circular(12)),
               ),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start, // Align to start horizontally
-                mainAxisAlignment: MainAxisAlignment.start, // Align to start vertically
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: const [
                   Padding(
-                    padding: EdgeInsets.all(8.0), // Optional padding for the text
+                    padding: EdgeInsets.all(8.0),
                     child: Text(
                       'Hello World',
                       style: TextStyle(
-                        color: Color.fromARGB(255, 0, 0, 0), // Text color
+                        color: Color.fromARGB(255, 0, 0, 0),
                       ),
                     ),
                   ),
@@ -38,32 +38,29 @@ class EnrollmentPage extends StatelessWidget {
             ),
           ),
 
-          // Second Container with 12 Rows manually added
+          // Second Container with 12 Rows
           Padding(
-            padding: const EdgeInsets.all(12), // Add 12 pixels of padding
+            padding: const EdgeInsets.all(12),
             child: Container(
-              height: 400, // Adjusted height for 12 rows
+              height: 400,
               decoration: BoxDecoration(
                 color: const Color.fromARGB(255, 211, 211, 211),
-                borderRadius: const BorderRadius.all(Radius.circular(12)), // Rounded corners
+                borderRadius: const BorderRadius.all(Radius.circular(12)),
               ),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start, // Align to start horizontally
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly, // Align to start vertically
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  // Padding for all sides except the bottom for the header text
                   const Padding(
-                    padding: EdgeInsets.only(left: 12, right: 12, top: 12), // Padding on top, left, and right
+                    padding: EdgeInsets.only(left: 12, right: 12, top: 12),
                     child: Text(
                       'I. Enrollment Form for Incoming Freshmen and Continuing Students\n',
                       style: TextStyle(
-                        color: Color.fromARGB(255, 0, 0, 0), // Text color
-                        fontSize: 16, // Optional font size
+                        color: Color.fromARGB(255, 0, 0, 0),
+                        fontSize: 16,
                       ),
                     ),
                   ),
-
-                  // 12 Rows
                   rowTemplate('Complete Name:', 'Juan De la Cruz Jr.'),
                   rowTemplate('School Year:', '2024 - 2025'),
                   rowTemplate('Semester:', 'Second Semester'),
@@ -81,19 +78,19 @@ class EnrollmentPage extends StatelessWidget {
             ),
           ),
 
-          // Third Container with a button
+          // Third Container
           Padding(
-            padding: const EdgeInsets.all(12), // Add 12 pixels of padding
+            padding: const EdgeInsets.all(12),
             child: Container(
-              height: 50, // Set height for the container
+              height: 50,
               decoration: BoxDecoration(
                 color: const Color.fromARGB(255, 211, 211, 211),
-                borderRadius: const BorderRadius.all(Radius.circular(12)), // Rounded corners
+                borderRadius: const BorderRadius.all(Radius.circular(12)),
               ),
-              child: Center( // Center the button within the container
+              child: Center(
                 child: ElevatedButton(
                   onPressed: () {
-                    // Add your button action here
+                    _showEnrollmentSubmittedDialog(context);
                   },
                   child: const Text('Submit Enrollment Confirmation'),
                 ),
@@ -108,9 +105,9 @@ class EnrollmentPage extends StatelessWidget {
   // Row template for reuse
   static Padding rowTemplate(String leftText, String rightText) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12), // Padding on both sides
+      padding: const EdgeInsets.symmetric(horizontal: 12),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween, // Spread items evenly
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
             leftText,
@@ -126,6 +123,27 @@ class EnrollmentPage extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  // Enrollment Confirmation Function to show dialog
+  void _showEnrollmentSubmittedDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Enrollment Submitted'),
+          content: const Text('Your enrollment has been submitted successfully!'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
     );
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:wvsu_iuis_v2/features/login_page.dart';
+import 'package:wvsu_iuis_v2/features/pages/account.dart';
 
 void main() {
   runApp(const MyApp());
@@ -32,7 +33,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: LoginPage(),
+      home: SignIn(),
     );
   }
 }

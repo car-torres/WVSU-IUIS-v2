@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:wvsu_iuis_v2/features/homepage.dart';
+import 'package:wvsu_iuis_v2/features/router.dart';
 
 class SignIn extends StatefulWidget {
   @override
@@ -152,7 +154,7 @@ class _SignInState extends State<SignIn> with SingleTickerProviderStateMixin {
                               onPressed: _isAgreed
                                   ? () {
                                       // _showAlert(context, "Log In", "Redirecting...",);
-                                      Navigator.push(context, MaterialPageRoute(builder: (_) => const Homepage()));
+                                      context.go('/home');
                                     }
                                   : null,
                               child: const Text("Log in"),

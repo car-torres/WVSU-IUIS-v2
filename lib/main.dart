@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:wvsu_iuis_v2/features/login_page.dart';
-import 'package:wvsu_iuis_v2/features/pages/account.dart';
+import 'package:wvsu_iuis_v2/features/router.dart';
 
 void main() {
   runApp(const MyApp());
@@ -12,13 +11,14 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
+      debugShowCheckedModeBanner: false,
       title: 'Sign Up',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: SignIn(),
+      routerConfig: router(),
     );
   }
 }

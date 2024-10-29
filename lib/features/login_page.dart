@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:wvsu_iuis_v2/features/homepage.dart';
 
 class SignIn extends StatefulWidget {
   @override
@@ -32,14 +33,16 @@ class _SignInState extends State<SignIn> with SingleTickerProviderStateMixin {
 
     // Automatically close the dialog after 2 seconds
     Future.delayed(const Duration(seconds: 2), () {
-      Navigator.of(context).pop();
+      // ignore: use_build_context_synchronously
+      Navigator.pop(context);
     });
   }
 
   // Email validation function
   void _validateEmail() {
     String email = _emailController.text;
-    bool isValid = RegExp(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$").hasMatch(email);
+    bool isValid = RegExp(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$")
+        .hasMatch(email);
     setState(() {
       _isEmailValid = isValid;
     });
@@ -127,7 +130,6 @@ class _SignInState extends State<SignIn> with SingleTickerProviderStateMixin {
                               obscureText: true,
                             ),
                             const SizedBox(height: 16),
-
                             Row(
                               children: [
                                 Checkbox(
@@ -146,11 +148,11 @@ class _SignInState extends State<SignIn> with SingleTickerProviderStateMixin {
                               ],
                             ),
                             const SizedBox(height: 16),
-
                             ElevatedButton(
                               onPressed: _isAgreed
                                   ? () {
-                                      _showAlert(context, "Log In", "Redirecting...");
+                                      // _showAlert(context, "Log In", "Redirecting...",);
+                                      Navigator.push(context, MaterialPageRoute(builder: (_) => const Homepage()));
                                     }
                                   : null,
                               child: const Text("Log in"),
@@ -176,11 +178,13 @@ class _SignInState extends State<SignIn> with SingleTickerProviderStateMixin {
                               keyboardType: TextInputType.emailAddress,
                             ),
                             const SizedBox(height: 16),
-
                             ElevatedButton(
                               onPressed: _isEmailValid
                                   ? () {
-                                      _showAlert(context, "Temporary Password Sent", "Check your spam folder.");
+                                      _showAlert(
+                                          context,
+                                          "Temporary Password Sent",
+                                          "Check your spam folder.");
                                     }
                                   : null,
                               child: const Text("Send Temporary Password"),

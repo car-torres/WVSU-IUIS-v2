@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 class GlobalColor {
   static const Color shadeLight = Color(0xFFF9FAFA);
   static const Color accentOne = Color(0xFF3CB1EA);
+  static const Color brand = Color(0xFF3CB1EA);
   static const Color shadeDark = Color(0xFF132033);
   static const Color gray = Color(0xFFE9EBED);
 }

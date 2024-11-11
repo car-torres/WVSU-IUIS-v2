@@ -95,7 +95,8 @@ class _HomepageState extends State<Homepage> {
         ),
         Expanded(
             flex: 5,
-            child: Padding(
+            child: Container(
+              color: GlobalColor.gray,
               padding: const EdgeInsets.all(24),
               child: _currentPage ?? _pages[0],
             )),

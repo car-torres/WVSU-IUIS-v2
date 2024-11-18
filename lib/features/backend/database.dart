@@ -18,7 +18,7 @@ class Database {
       .get();
 
     if (event.docs.isEmpty) {
-      return "There is no student with that ID in our database.";
+      return "Student ID Entry Invalid. It's either that your ID\ndoes not exist in the database, or you have\nentered the incorrect ID.";
     }
 
     return event.docs[0];
@@ -27,8 +27,8 @@ class Database {
   static Future<String?> validatePassword(String studentID, String password) async {
     var student = await validateExistingStudentID(studentID);
 
-    if (studentID.runtimeType == String) {
-      return studentID;
+    if (student.runtimeType == String) {
+      return student;
     }
 
     final dbPassword = student.data()["password"];

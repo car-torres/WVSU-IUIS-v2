@@ -51,8 +51,8 @@ class _SignInFormState extends State<SignIn>
             child: Form(
                 child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 64),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              child: ListView(
+                shrinkWrap: true,
                 children: [
                   SvgPicture.asset(
                     "assets/wvsu_logo.svg",
@@ -83,8 +83,8 @@ class _SignInFormState extends State<SignIn>
                       indicatorSize: TabBarIndicatorSize.tab,
                       indicatorWeight: 3,
                     ),
-                    Expanded(
-                      // height: 300,
+                    SizedBox(
+                      height: 300,
                       child: TabBarView(
                         controller: _tabController,
                         children: [_loginForm(), _forgotPasswordForm()],
@@ -121,9 +121,8 @@ class _SignInFormState extends State<SignIn>
   }
 
   Widget _loginForm() {
-    return ListView(
-      shrinkWrap: true,
-      // crossAxisAlignment: CrossAxisAlignment.start,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const SizedBox(
           height: 4,
@@ -271,8 +270,8 @@ class _SignInFormState extends State<SignIn>
       await showDialog<String>(
           context: context,
           builder: (BuildContext context) => AlertDialog(
-                title: const Text('Login Error'),
-                content: Text(v),
+                title: ThemedText("Login Error", size: GlobalFontSize.subheading),
+                content: ThemedText(v, size: GlobalFontSize.standard),
                 actions: [
                   TextButton(
                       onPressed: () => Navigator.pop(context, 'Close'),
@@ -287,8 +286,8 @@ class _SignInFormState extends State<SignIn>
         await showDialog<String>(
             context: context,
             builder: (BuildContext context) => AlertDialog(
-                  title: const Text('Login Error'),
-                  content: Text(val ?? 'Error message'),
+                  title: ThemedText("Login Error", size: GlobalFontSize.subheading),
+                  content: ThemedText(val ?? 'Error message', size: GlobalFontSize.standard),
                   actions: [
                     TextButton(
                         onPressed: () => Navigator.pop(context, 'Close'),

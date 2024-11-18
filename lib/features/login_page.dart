@@ -1,51 +1,41 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:hyperlink/hyperlink.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:simple_gradient_text/simple_gradient_text.dart';
+import 'package:wvsu_iuis_v2/features/backend/database.dart';
+import 'package:wvsu_iuis_v2/features/components/helpers.dart';
+import 'package:wvsu_iuis_v2/features/components/themed_text.dart';
+import 'package:wvsu_iuis_v2/features/theme.dart';
 
 class SignIn extends StatefulWidget {
+  const SignIn({super.key});
+
   @override
-  State createState() => _SignInState();
+  State<StatefulWidget> createState() => _SignInFormState();
 }
 
-class _SignInState extends State<SignIn> with SingleTickerProviderStateMixin {
-  bool _isAgreed = false; // Checkbox state
-  bool _isEmailValid = false; // Email validation state
+class _SignInFormState extends State<SignIn>
+    with SingleTickerProviderStateMixin {
+  static const List<Tab> tabs = [
+    Tab(text: "Login"),
+    Tab(text: "Forgot Password"),
+  ];
+
   late TabController _tabController;
-  final TextEditingController _emailController = TextEditingController();
+  bool _agreementChecked = false;
 
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this);
-    _emailController.addListener(_validateEmail);
+    _tabController = TabController(length: tabs.length, vsync: this);
   }
 
-  // Function to show an alert
-  void _showAlert(BuildContext context, String title, String content) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(title),
-          content: Text(content),
-        );
-      },
-    );
-
-    // Automatically close the dialog after 2 seconds
-    Future.delayed(const Duration(seconds: 2), () {
-      // ignore: use_build_context_synchronously
-      Navigator.pop(context);
-    });
-  }
-
-  // Email validation function
-  void _validateEmail() {
-    String email = _emailController.text;
-    bool isValid = RegExp(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$")
-        .hasMatch(email);
-    setState(() {
-      _isEmailValid = isValid;
-    });
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
   }
 
   @override
@@ -53,155 +43,50 @@ class _SignInState extends State<SignIn> with SingleTickerProviderStateMixin {
     return Scaffold(
       body: Row(
         children: [
-          // Left side: form fields
           Expanded(
-            flex: 1,
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
+            child: Form(
+                child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 64),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Logo
-                  Row(
-                    children: [
-                      Image.asset(
-                        'assets/test.jpg',
-                        height: 50,
-                        width: 50,
+                  SvgPicture.asset(
+                    "assets/wvsu_logo.svg",
+                    width: 80,
+                    height: 80,
+                  ),
+                  const SizedBox(height: 48),
+                  GradientText("Integrated University Information System",
+                      style: GlobalFontSize.heading
+                          .copyWith(fontSize: 48, height: 1.2, shadows: [
+                        Shadow(
+                          color: GlobalColor.shadeDark.withAlpha(30),
+                          offset: const Offset(0, 4),
+                          blurRadius: 6,
+                        )
+                      ]),
+                      colors: const [
+                        GlobalColor.accentOne,
+                        GlobalColor.brand,
+                      ]),
+                  const SizedBox(height: 48),
+                  ...withGap(height: 24, children: [
+                    ThemedText("Sign in to your account to continue.",
+                        size: GlobalFontSize.standard),
+                    TabBar(controller: _tabController, tabs: tabs),
+                    Expanded(
+                      // height: 300,
+                      child: TabBarView(
+                        controller: _tabController,
+                        children: [_loginForm(), _forgotPasswordForm()],
                       ),
-                      const SizedBox(width: 16),
-                      Image.asset(
-                        'assets/test.jpg',
-                        height: 50,
-                        width: 50,
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-
-                  // Title Text
-                  const Text(
-                    'Integrated University\nInformation System',
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 8),
-                  const Text(
-                    'Sign in to your account to continue.',
-                    style: TextStyle(fontSize: 18),
-                  ),
-                  const SizedBox(height: 16),
-
-                  // TabBar for Login and Forgot Password
-                  TabBar(
-                    controller: _tabController,
-                    labelColor: Colors.blue,
-                    unselectedLabelColor: Colors.grey,
-                    tabs: const [
-                      Tab(text: 'Login'),
-                      Tab(text: 'Forgot Password'),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-
-                  // TabBarView for content switching
-                  SizedBox(
-                    height: 300,
-                    child: TabBarView(
-                      controller: _tabController,
-                      children: [
-                        // Login Tab
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            TextFormField(
-                              decoration: const InputDecoration(
-                                labelText: "Student ID Number",
-                                hintText: "Ex. 2022M0099",
-                                border: OutlineInputBorder(),
-                              ),
-                            ),
-                            const SizedBox(height: 16),
-                            TextFormField(
-                              decoration: const InputDecoration(
-                                labelText: "Password",
-                                border: OutlineInputBorder(),
-                              ),
-                              obscureText: true,
-                            ),
-                            const SizedBox(height: 16),
-                            Row(
-                              children: [
-                                Checkbox(
-                                  value: _isAgreed,
-                                  onChanged: (bool? value) {
-                                    setState(() {
-                                      _isAgreed = value ?? false;
-                                    });
-                                  },
-                                ),
-                                const Expanded(
-                                  child: Text(
-                                    "I have read and agree to the terms of the Data Privacy Agreement",
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 16),
-                            ElevatedButton(
-                              onPressed: _isAgreed
-                                  ? () {
-                                      // _showAlert(context, "Log In", "Redirecting...",);
-                                      context.go('/home');
-                                    }
-                                  : null,
-                              child: const Text("Log in"),
-                            ),
-                          ],
-                        ),
-
-                        // Forgot Password Tab
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text(
-                              "Enter your email address to receive a temporary password.",
-                              style: TextStyle(fontSize: 16),
-                            ),
-                            const SizedBox(height: 16),
-                            TextFormField(
-                              controller: _emailController,
-                              decoration: const InputDecoration(
-                                labelText: "Email",
-                                border: OutlineInputBorder(),
-                              ),
-                              keyboardType: TextInputType.emailAddress,
-                            ),
-                            const SizedBox(height: 16),
-                            ElevatedButton(
-                              onPressed: _isEmailValid
-                                  ? () {
-                                      _showAlert(
-                                          context,
-                                          "Temporary Password Sent",
-                                          "Check your spam folder.");
-                                    }
-                                  : null,
-                              child: const Text("Send Temporary Password"),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
+                    )
+                  ]),
                 ],
               ),
-            ),
+            )),
           ),
-
-          // Right side: background image or placeholder
           Expanded(
-            flex: 1,
             child: Container(
               decoration: const BoxDecoration(
                 image: DecorationImage(
@@ -216,10 +101,104 @@ class _SignInState extends State<SignIn> with SingleTickerProviderStateMixin {
     );
   }
 
-  @override
-  void dispose() {
-    _tabController.dispose();
-    _emailController.dispose();
-    super.dispose();
+  Widget _loginForm() {
+    return ListView(
+      shrinkWrap: true,
+      // crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SizedBox(
+          height: 4,
+        ),
+        ...withGap(height: 24, children: [
+          TextFormField(
+            style: GlobalFontSize.standard,
+            decoration: InputDecoration(
+              suffixIcon: const PhosphorIcon(
+                PhosphorIconsFill.user,
+                size: 14,
+              ),
+              labelText: "Student ID",
+              floatingLabelBehavior: FloatingLabelBehavior.always,
+              labelStyle: GlobalFontSize.standard,
+              hintText: "Example: 2024M0123",
+              enabledBorder: GlobalStyles.inputBorder,
+              focusedBorder: GlobalStyles.inputBorder,
+              hintStyle: GlobalFontSize.standard
+                  .copyWith(color: GlobalColor.shadeDark.withAlpha(128)),
+            ),
+          ),
+          TextFormField(
+            style: GlobalFontSize.standard,
+            obscureText: true,
+            decoration: InputDecoration(
+              suffixIcon: const PhosphorIcon(
+                PhosphorIconsFill.key,
+                size: 14,
+              ),
+              labelText: "Password",
+              floatingLabelBehavior: FloatingLabelBehavior.always,
+              labelStyle: GlobalFontSize.standard,
+              enabledBorder: GlobalStyles.inputBorder,
+              focusedBorder: GlobalStyles.inputBorder,
+              hintStyle: GlobalFontSize.standard
+                  .copyWith(color: GlobalColor.shadeDark.withAlpha(128)),
+            ),
+          ),
+          CheckboxListTile(
+            tileColor: Colors.transparent,
+            hoverColor: Colors.transparent,
+            selectedTileColor: Colors.teal,
+            controlAffinity: ListTileControlAffinity.leading,
+            value: _agreementChecked,
+            onChanged: (value) {
+              setState(() {
+                _agreementChecked = value ?? false;
+              });
+            },
+            title: HyperLink(
+              text:
+                  'I have read and agree to the terms of the [Data Privacy Agreement](https://wvsu.edu.ph)',
+              linkStyle:
+                  GlobalFontSize.standard.copyWith(color: GlobalColor.brand),
+              textStyle: GlobalFontSize.standard
+                  .copyWith(color: GlobalColor.shadeDark),
+            ),
+          ),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Container(
+              margin: const EdgeInsets.only(bottom: 10),
+              decoration: BoxDecoration(boxShadow: [
+                BoxShadow(
+                  color: GlobalColor.shadeDark.withAlpha(30),
+                  offset: const Offset(0, 4),
+                  blurRadius: 6,
+                  spreadRadius: -2,
+                )
+              ]),
+              child: TextButton(
+                  style: ButtonStyle(
+                    shape: WidgetStatePropertyAll(RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8))),
+                    padding: const WidgetStatePropertyAll(
+                        EdgeInsets.symmetric(vertical: 8, horizontal: 16)),
+                    backgroundColor:
+                        const WidgetStatePropertyAll(GlobalColor.brand),
+                  ),
+                  onPressed: () {},
+                  child: ThemedText("Log in",
+                      size: GlobalFontSize.button,
+                      color: GlobalColor.shadeLight)),
+            ),
+          )
+        ])
+      ],
+    );
+  }
+
+  Widget _forgotPasswordForm() {
+    return const Column(
+      children: [Text("Hello World")],
+    );
   }
 }

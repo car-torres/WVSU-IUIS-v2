@@ -37,10 +37,16 @@ class _HomepageState extends State<Homepage> {
         Container(
           padding: const EdgeInsets.all(24),
           decoration: const BoxDecoration(
-            gradient: LinearGradient(
-                begin: Alignment.centerLeft,
-                end: Alignment.centerRight,
-                colors: [GlobalColor.shadeLight, GlobalColor.accentOne]),
+            image: DecorationImage(
+              image: AssetImage('assets/bg.jpg'), // Background image path
+              fit: BoxFit.cover,
+              opacity: 0.2,
+              alignment: Alignment.centerLeft
+            ),
+            gradient: LinearGradient(colors: [
+              GlobalColor.accentOne,
+              GlobalColor.shadeLight,
+            ]),
           ),
           child: MouseRegion(
             onEnter: (_) => setState(() => _isExtended = true),

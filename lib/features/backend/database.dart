@@ -12,17 +12,26 @@ class Database {
     });
   }
 
-  static Future<String?> validatePassword(String studentID, String password) async {
+  static validateExistingStudentID(String studentID) async {
     final event = await _db.collection("students")
-      .where("studentID", isEqualTo: studentID)
-      .where("password", isEqualTo: password)
+      .where("studentID", isEqualTo: studentID.toUpperCase())
       .get();
 
     if (event.docs.isEmpty) {
       return "There is no student with that ID in our database.";
     }
 
-    final dbPassword = event.docs[0].data()["password"];
+    return event.docs[0];
+  }
+
+  static Future<String?> validatePassword(String studentID, String password) async {
+    var student = await validateExistingStudentID(studentID);
+
+    if (studentID.runtimeType == String) {
+      return studentID;
+    }
+
+    final dbPassword = student.data()["password"];
     if (dbPassword != password) {
       return "Password is incorrect.";
     }

@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:wvsu_iuis_v2/features/router.dart';
+import 'package:wvsu_iuis_v2/features/theme.dart';
 import 'package:wvsu_iuis_v2/firebase_options.dart';
 
 void main() async {
@@ -20,7 +21,13 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Sign Up',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0XFF3CB1EA)),
+        colorScheme: const ColorScheme.light(
+          primary: GlobalColor.brand,
+          secondary: GlobalColor.accentOne,
+          surface: GlobalColor.shadeLight,
+          surfaceDim: GlobalColor.gray,
+          onSurface: GlobalColor.shadeDark
+        ),
         useMaterial3: true,
       ),
       routerConfig: router(),

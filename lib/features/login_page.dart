@@ -1,6 +1,6 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hyperlink/hyperlink.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:simple_gradient_text/simple_gradient_text.dart';
@@ -24,6 +24,10 @@ class _SignInFormState extends State<SignIn>
   ];
 
   late TabController _tabController;
+
+  String _studentID = "";
+  String _password = "";
+  String _email = "";
   bool _agreementChecked = false;
 
   @override
@@ -73,7 +77,12 @@ class _SignInFormState extends State<SignIn>
                   ...withGap(height: 24, children: [
                     ThemedText("Sign in to your account to continue.",
                         size: GlobalFontSize.standard),
-                    TabBar(controller: _tabController, tabs: tabs),
+                    TabBar(
+                      controller: _tabController,
+                      tabs: tabs,
+                      indicatorSize: TabBarIndicatorSize.tab,
+                      indicatorWeight: 3,
+                    ),
                     Expanded(
                       // height: 300,
                       child: TabBarView(
@@ -87,14 +96,24 @@ class _SignInFormState extends State<SignIn>
             )),
           ),
           Expanded(
-            child: Container(
-              decoration: const BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage('assets/test.jpg'), // Background image path
-                  fit: BoxFit.cover,
+            child: Stack(children: [
+              Container(
+                decoration: const BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage('assets/bg.jpg'), // Background image path
+                    fit: BoxFit.cover,
+                  ),
                 ),
               ),
-            ),
+              Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(colors: [
+                    GlobalColor.accentOne.withAlpha(128),
+                    GlobalColor.shadeLight.withAlpha(128),
+                  ]),
+                ),
+              )
+            ]),
           ),
         ],
       ),
@@ -110,43 +129,21 @@ class _SignInFormState extends State<SignIn>
           height: 4,
         ),
         ...withGap(height: 24, children: [
-          TextFormField(
-            style: GlobalFontSize.standard,
-            decoration: InputDecoration(
-              suffixIcon: const PhosphorIcon(
-                PhosphorIconsFill.user,
-                size: 14,
-              ),
-              labelText: "Student ID",
-              floatingLabelBehavior: FloatingLabelBehavior.always,
-              labelStyle: GlobalFontSize.standard,
-              hintText: "Example: 2024M0123",
-              enabledBorder: GlobalStyles.inputBorder,
-              focusedBorder: GlobalStyles.inputBorder,
-              hintStyle: GlobalFontSize.standard
-                  .copyWith(color: GlobalColor.shadeDark.withAlpha(128)),
-            ),
+          _textField(
+            label: "Student ID",
+            hint: "Example: 2024M0123",
+            icon: PhosphorIconsBold.user,
+            onChanged: (id) => _studentID = id,
           ),
-          TextFormField(
-            style: GlobalFontSize.standard,
-            obscureText: true,
-            decoration: InputDecoration(
-              suffixIcon: const PhosphorIcon(
-                PhosphorIconsFill.key,
-                size: 14,
-              ),
-              labelText: "Password",
-              floatingLabelBehavior: FloatingLabelBehavior.always,
-              labelStyle: GlobalFontSize.standard,
-              enabledBorder: GlobalStyles.inputBorder,
-              focusedBorder: GlobalStyles.inputBorder,
-              hintStyle: GlobalFontSize.standard
-                  .copyWith(color: GlobalColor.shadeDark.withAlpha(128)),
-            ),
-          ),
+          _textField(
+              label: "Password",
+              icon: PhosphorIconsBold.key,
+              obscureText: true,
+              onChanged: (id) => _password = id),
           CheckboxListTile(
             tileColor: Colors.transparent,
             hoverColor: Colors.transparent,
+            contentPadding: const EdgeInsets.all(0),
             selectedTileColor: Colors.teal,
             controlAffinity: ListTileControlAffinity.leading,
             value: _agreementChecked,
@@ -185,7 +182,7 @@ class _SignInFormState extends State<SignIn>
                     backgroundColor:
                         const WidgetStatePropertyAll(GlobalColor.brand),
                   ),
-                  onPressed: () {},
+                  onPressed: () async => await _validateLogin(context),
                   child: ThemedText("Log in",
                       size: GlobalFontSize.button,
                       color: GlobalColor.shadeLight)),
@@ -197,8 +194,121 @@ class _SignInFormState extends State<SignIn>
   }
 
   Widget _forgotPasswordForm() {
-    return const Column(
-      children: [Text("Hello World")],
+    return Column(
+      children: [
+        const SizedBox(
+          height: 4,
+        ),
+        ...withGap(height: 24, children: [
+          _textField(
+            label: "Email",
+            hint: "firstname.lastname@wvsu.edu.ph",
+            icon: PhosphorIconsBold.envelope,
+            onChanged: (email) => _email = email,
+          ),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Container(
+              margin: const EdgeInsets.only(bottom: 10),
+              decoration: BoxDecoration(boxShadow: [
+                BoxShadow(
+                  color: GlobalColor.shadeDark.withAlpha(30),
+                  offset: const Offset(0, 4),
+                  blurRadius: 6,
+                  spreadRadius: -2,
+                )
+              ]),
+              child: TextButton(
+                  style: ButtonStyle(
+                    shape: WidgetStatePropertyAll(RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8))),
+                    padding: const WidgetStatePropertyAll(
+                        EdgeInsets.symmetric(vertical: 8, horizontal: 16)),
+                    backgroundColor:
+                        const WidgetStatePropertyAll(GlobalColor.brand),
+                  ),
+                  onPressed: () {},
+                  child: ThemedText("Send Verification Message",
+                      size: GlobalFontSize.button,
+                      color: GlobalColor.shadeLight)),
+            ),
+          )
+        ])
+      ],
     );
+  }
+
+  TextFormField _textField({
+    String? label,
+    String? hint,
+    void Function(String)? onChanged,
+    PhosphorFlatIconData? icon,
+    bool obscureText = false,
+  }) {
+    return TextFormField(
+      style: GlobalFontSize.standard,
+      obscureText: obscureText,
+      onChanged: onChanged,
+      decoration: InputDecoration(
+        suffixIcon: icon != null ? PhosphorIcon(icon, size: 14) : null,
+        labelText: label,
+        hintText: hint,
+        floatingLabelBehavior: FloatingLabelBehavior.always,
+        labelStyle: GlobalFontSize.standard,
+        enabledBorder: GlobalStyles.inputBorder,
+        focusedBorder: GlobalStyles.inputBorder,
+        errorBorder: GlobalStyles.inputBorder,
+        focusedErrorBorder: GlobalStyles.inputBorder,
+        hintStyle: GlobalFontSize.standard
+            .copyWith(color: GlobalColor.shadeDark.withAlpha(128)),
+      ),
+    );
+  }
+
+   _validateLogin(BuildContext context) async {
+    String? v = _fieldsAreEmpty();
+    if (v != null) {
+      await showDialog<String>(
+          context: context,
+          builder: (BuildContext context) => AlertDialog(
+                title: const Text('Login Error'),
+                content: Text(v),
+                actions: [
+                  TextButton(
+                      onPressed: () => Navigator.pop(context, 'Close'),
+                      child: const Text('Close'))
+                ],
+              ));
+      return;
+    }
+
+    Database.validatePassword(_studentID, _password).then((val) async {
+      if ((val != null || !_agreementChecked) && context.mounted) {
+        await showDialog<String>(
+            context: context,
+            builder: (BuildContext context) => AlertDialog(
+                  title: const Text('Login Error'),
+                  content: Text(val ?? 'Error message'),
+                  actions: [
+                    TextButton(
+                        onPressed: () => Navigator.pop(context, 'Close'),
+                        child: const Text('Close'))
+                  ],
+                ));
+
+        return;
+      }
+
+      if (context.mounted) {
+        context.go('/home');
+      }
+    });
+  }
+
+  String? _fieldsAreEmpty() {
+    if (_studentID.isEmpty) return 'The Student ID field is empty!';
+    if (_password.isEmpty) return 'The password field is empty!';
+
+    return _agreementChecked ? null : 'You have not checked the agreement box!';
   }
 }

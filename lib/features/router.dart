@@ -9,7 +9,7 @@ GoRouter router() {
   }
 
   return GoRouter(routes: [
-    route('/', SignIn()),
+    route('/', const SignIn()),
     route('/home', const Homepage()),
   ]);
 }

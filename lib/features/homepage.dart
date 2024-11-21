@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
+import 'package:localstorage/localstorage.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:wvsu_iuis_v2/features/components/themed_text.dart';
+import 'package:wvsu_iuis_v2/features/login_page.dart';
 import 'package:wvsu_iuis_v2/features/pages/academics.dart';
 import 'package:wvsu_iuis_v2/features/pages/account.dart';
 import 'package:wvsu_iuis_v2/features/pages/dashboard.dart';
@@ -38,11 +41,10 @@ class _HomepageState extends State<Homepage> {
           padding: const EdgeInsets.all(24),
           decoration: const BoxDecoration(
             image: DecorationImage(
-              image: AssetImage('assets/bg.jpg'), // Background image path
-              fit: BoxFit.cover,
-              opacity: 0.2,
-              alignment: Alignment.centerLeft
-            ),
+                image: AssetImage('assets/bg.jpg'), // Background image path
+                fit: BoxFit.cover,
+                opacity: 0.2,
+                alignment: Alignment.centerLeft),
             gradient: LinearGradient(colors: [
               GlobalColor.accentOne,
               GlobalColor.shadeLight,
@@ -78,6 +80,39 @@ class _HomepageState extends State<Homepage> {
                   )
                 ],
               ),
+              trailing: TextButton(
+                  onPressed: () {
+                    context.go('/login');
+                  },
+                  style: const ButtonStyle(
+                    overlayColor: WidgetStatePropertyAll(Colors.transparent),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Row(
+                      children: [
+                        const PhosphorIcon(
+                          PhosphorIconsBold.arrowBendUpLeft,
+                          color: GlobalColor.shadeLight,
+                        ),
+                        ClipRect(
+                          child: UnconstrainedBox(
+                            child: AnimatedContainer(
+                              duration: const Duration(microseconds: 200),
+                              width: _isExtended ? 55 : 0,
+                              child: Text(
+                                'Close',
+                                softWrap: false,
+                                textAlign: TextAlign.right,
+                                style: GlobalFontSize.button
+                                    .copyWith(color: GlobalColor.shadeLight),
+                              ),
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                  )),
               backgroundColor: Colors.transparent,
               destinations: _navOptions(),
               unselectedIconTheme:

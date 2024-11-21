@@ -1,11 +1,14 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:localstorage/localstorage.dart';
 import 'package:wvsu_iuis_v2/features/router.dart';
 import 'package:wvsu_iuis_v2/features/theme.dart';
 import 'package:wvsu_iuis_v2/firebase_options.dart';
 
-void main() async {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  await initLocalStorage();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.windows);
 
   runApp(const MyApp());

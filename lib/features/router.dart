@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:localstorage/localstorage.dart';
 import 'package:wvsu_iuis_v2/features/homepage.dart';
 import 'package:wvsu_iuis_v2/features/login_page.dart';
 
@@ -9,7 +10,7 @@ GoRouter router() {
   }
 
   return GoRouter(routes: [
-    route('/', const SignIn()),
-    route('/home', const Homepage()),
-  ]);
+    route('/login', const SignIn()),
+    route('/', const Homepage()),
+  ], initialLocation: localStorage.getItem('is-logged-in') == null ? '/login' : '/');
 }

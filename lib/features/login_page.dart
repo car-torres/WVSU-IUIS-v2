@@ -299,7 +299,7 @@ class _SignInFormState extends State<SignIn>
       }
 
       if (context.mounted) {
-        context.go('/home');
+        context.go('/');
       }
     });
   }

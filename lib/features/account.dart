@@ -1,221 +1,270 @@
 import 'package:flutter/material.dart';
+import 'package:wvsu_iuis_v2/features/components/themed_text.dart';
+import 'package:wvsu_iuis_v2/features/theme.dart';
+import 'package:wvsu_iuis_v2/features/components/custom_card.dart';
+import 'package:wvsu_iuis_v2/features/backend/database.dart';
 
-class SignIn extends StatefulWidget {
+class Account extends StatefulWidget {
+  const Account({super.key});
+
   @override
-  _SignInState createState() => _SignInState();
+  _AccountState createState() => _AccountState();
 }
 
-class _SignInState extends State<SignIn> with SingleTickerProviderStateMixin {
-  bool _isAgreed = false; // Checkbox state
-  bool _isEmailValid = false; // Email validation state
-  late TabController _tabController;
-  final TextEditingController _emailController = TextEditingController();
+class _AccountState extends State<Account> {
+  final TextEditingController _oldPasswordController = TextEditingController();
+  final TextEditingController _newPasswordController = TextEditingController();
+  String? _passwordError;
+  bool _isPasswordValid = true;
 
-  @override
-  void initState() {
-    super.initState();
-    _tabController = TabController(length: 2, vsync: this);
-    _emailController.addListener(_validateEmail);
+  Future<void> _validatePassword() async {
+    final studentID = '2022M0128'; // Replace with dynamic student ID
+    final oldPassword = _oldPasswordController.text;
+
+    // Validate password from Firebase
+    final errorMessage = await Database.validatePassword(studentID, oldPassword);
+    setState(() {
+      _passwordError = errorMessage;
+    });
   }
 
-  // Function to show an alert
-  void _showAlert(BuildContext context, String title, String content) {
-    showDialog(
+  bool _validateNewPassword(String password) {
+    final regex =
+        RegExp(r'^(?=.*[!@#$%^&*(),.?":{}|<>])(?=.*[A-Z])(?=.*[0-9]).{8,}$');
+    return regex.hasMatch(password);
+  }
+
+  Future<void> _showSuccessPopup(BuildContext context) async {
+    await showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text(title),
-          content: Text(content),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          contentPadding: const EdgeInsets.all(16),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ThemedText(
+                'Password changed successfully',
+                size: GlobalFontSize.standard,
+                color: GlobalColor.accentOne,
+              ),
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          ),
         );
       },
     );
-
-    // Automatically close the dialog after 2 seconds
-    Future.delayed(const Duration(seconds: 2), () {
-      Navigator.of(context).pop();
-    });
-  }
-
-  // Email validation function
-  void _validateEmail() {
-    String email = _emailController.text;
-    bool isValid = RegExp(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$").hasMatch(email);
-    setState(() {
-      _isEmailValid = isValid;
-    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Row(
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Left side: form fields
-          Expanded(
-            flex: 1,
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Logo
-                  Row(
-                    children: [
-                      Image.asset(
-                        'assets/test.jpg',
-                        height: 50,
-                        width: 50,
+          ThemedText('Account Information', size: GlobalFontSize.heading),
+          const SizedBox(height: 24),
+          CustomCard(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    ClipOval(
+                      child: Image.network(
+                        'https://images.unsplash.com/photo-1730470316489-0379f25dfabb?q=80&w=1374&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+                        width: 100,
+                        height: 100,
+                        fit: BoxFit.cover,
                       ),
-                      const SizedBox(width: 16),
-                      Image.asset(
-                        'assets/test.jpg',
-                        height: 50,
-                        width: 50,
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-
-                  // Title Text
-                  const Text(
-                    'Integrated University\nInformation System',
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 8),
-                  const Text(
-                    'Sign in to your account to continue.',
-                    style: TextStyle(fontSize: 18),
-                  ),
-                  const SizedBox(height: 16),
-
-                  // TabBar for Login and Forgot Password
-                  TabBar(
-                    controller: _tabController,
-                    labelColor: Colors.blue,
-                    unselectedLabelColor: Colors.grey,
-                    tabs: const [
-                      Tab(text: 'Login'),
-                      Tab(text: 'Forgot Password'),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-
-                  // TabBarView for content switching
-                  SizedBox(
-                    height: 300,
-                    child: TabBarView(
-                      controller: _tabController,
-                      children: [
-                        // Login Tab
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            TextFormField(
-                              decoration: const InputDecoration(
-                                labelText: "Student ID Number",
-                                hintText: "Ex. 2022M0099",
-                                border: OutlineInputBorder(),
-                              ),
-                            ),
-                            const SizedBox(height: 16),
-                            TextFormField(
-                              decoration: const InputDecoration(
-                                labelText: "Password",
-                                border: OutlineInputBorder(),
-                              ),
-                              obscureText: true,
-                            ),
-                            const SizedBox(height: 16),
-
-                            Row(
-                              children: [
-                                Checkbox(
-                                  value: _isAgreed,
-                                  onChanged: (bool? value) {
-                                    setState(() {
-                                      _isAgreed = value ?? false;
-                                    });
-                                  },
-                                ),
-                                const Expanded(
-                                  child: Text(
-                                    "I have read and agree to the terms of the Data Privacy Agreement",
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 16),
-
-                            ElevatedButton(
-                              onPressed: _isAgreed
-                                  ? () {
-                                      _showAlert(context, "Log In", "Redirecting...");
-                                    }
-                                  : null,
-                              child: const Text("Log in"),
-                            ),
-                          ],
-                        ),
-
-                        // Forgot Password Tab
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text(
-                              "Enter your email address to receive a temporary password.",
-                              style: TextStyle(fontSize: 16),
-                            ),
-                            const SizedBox(height: 16),
-                            TextFormField(
-                              controller: _emailController,
-                              decoration: const InputDecoration(
-                                labelText: "Email",
-                                border: OutlineInputBorder(),
-                              ),
-                              keyboardType: TextInputType.emailAddress,
-                            ),
-                            const SizedBox(height: 16),
-
-                            ElevatedButton(
-                              onPressed: _isEmailValid
-                                  ? () {
-                                      _showAlert(context, "Temporary Password Sent", "Check your spam folder.");
-                                    }
-                                  : null,
-                              child: const Text("Send Temporary Password"),
-                            ),
-                          ],
-                        ),
-                      ],
                     ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          ThemedText(
+                            'Rei Ebenezer G. Duhina',
+                            size: GlobalFontSize.subheading,
+                            color: GlobalColor.accentOne,
+                          ),
+                          const SizedBox(height: 4),
+                          Opacity(
+                            opacity: 0.6,
+                            child: RichText(
+                              text: TextSpan(
+                                style: DefaultTextStyle.of(context).style,
+                                children: [
+                                  const TextSpan(
+                                    text: 'Student ID: ',
+                                    style: TextStyle(fontWeight: FontWeight.bold),
+                                  ),
+                                  const TextSpan(text: '2022M0128'),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        // Add edit functionality here
+                      },
+                      child: const Text('Edit Personal Information'),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 24),
+                ThemedText('Academic Information', size: GlobalFontSize.subheading),
+                const SizedBox(height: 8),
+                Opacity(
+                  opacity: 0.8,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      RichText(
+                        text: TextSpan(
+                          style: DefaultTextStyle.of(context).style,
+                          children: [
+                            const TextSpan(
+                                text: 'Program/Degree: ',
+                                style: TextStyle(fontWeight: FontWeight.bold)),
+                            const TextSpan(text: 'Bachelor of Science in Computer Science'),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      RichText(
+                        text: TextSpan(
+                          style: DefaultTextStyle.of(context).style,
+                          children: [
+                            const TextSpan(
+                                text: 'Year Level: ',
+                                style: TextStyle(fontWeight: FontWeight.bold)),
+                            const TextSpan(text: '3rd year'),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      RichText(
+                        text: TextSpan(
+                          style: DefaultTextStyle.of(context).style,
+                          children: [
+                            const TextSpan(
+                                text: 'Status: ',
+                                style: TextStyle(fontWeight: FontWeight.bold)),
+                            const TextSpan(text: 'Regular'),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+                const SizedBox(height: 24),
+                ThemedText('Personal Information', size: GlobalFontSize.subheading),
+                const SizedBox(height: 8),
+                Opacity(
+                  opacity: 0.8,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      RichText(
+                        text: TextSpan(
+                          style: DefaultTextStyle.of(context).style,
+                          children: [
+                            const TextSpan(
+                              text: 'Email: ',
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            const TextSpan(
+                              text: 'reiebenezer.duhina@wvsu.edu.ph',
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      RichText(
+                        text: TextSpan(
+                          style: DefaultTextStyle.of(context).style,
+                          children: [
+                            const TextSpan(
+                              text: 'Address: ',
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            const TextSpan(
+                              text: 'Purok 1, Yapo, Barbaza, Antique 5706',
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
           ),
-
-          // Right side: background image or placeholder
-          Expanded(
-            flex: 1,
-            child: Container(
-              decoration: const BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage('assets/test.jpg'), // Background image path
-                  fit: BoxFit.cover,
+          const SizedBox(height: 24),
+          CustomCard(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ThemedText('Change Password', size: GlobalFontSize.subheading),
+                const SizedBox(height: 16),
+                TextField(
+                  controller: _oldPasswordController,
+                  obscureText: true,
+                  decoration: InputDecoration(
+                    labelText: 'Old Password',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    errorText: _passwordError,
+                  ),
                 ),
-              ),
+                const SizedBox(height: 16),
+                TextField(
+                  controller: _newPasswordController,
+                  obscureText: true,
+                  onChanged: (value) {
+                    setState(() {
+                      _isPasswordValid = _validateNewPassword(value);
+                    });
+                  },
+                  decoration: InputDecoration(
+                    labelText: 'New Password',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    errorText: _isPasswordValid
+                        ? null
+                        : 'Password must contain 1 special character, 1 uppercase, and 1 number.',
+                  ),
+                ),
+                const SizedBox(height: 16),
+                ElevatedButton(
+                  onPressed: () async {
+                    await _validatePassword();
+                    if (_isPasswordValid && _passwordError == null) {
+                      await _showSuccessPopup(context);
+                    }
+                  },
+                  child: const Text('Update Password'),
+                ),
+              ],
             ),
           ),
         ],
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    _tabController.dispose();
-    _emailController.dispose();
-    super.dispose();
   }
 }

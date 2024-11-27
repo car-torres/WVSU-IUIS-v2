@@ -32,7 +32,10 @@ class InboxScreen extends StatelessWidget {
           children: [
             // Header Section
             Container(
-              padding: const EdgeInsets.all(16),
+              height: 50,
+              padding: const EdgeInsets.only(
+                  left: 5.0, right: 5.0, top: 10.0, bottom: 10.0),
+              margin: const EdgeInsets.only(left: 250, right: 250),
               decoration: BoxDecoration(
                 color: const Color.fromARGB(255, 118, 167, 207),
                 borderRadius: BorderRadius.circular(8),
@@ -40,7 +43,10 @@ class InboxScreen extends StatelessWidget {
               child: const Center(
                 child: Text(
                   'Check your messages!',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Color.fromARGB(255, 255, 255, 255)),
                 ),
               ),
             ),
@@ -51,10 +57,39 @@ class InboxScreen extends StatelessWidget {
               child: ListView.builder(
                 itemCount: 10, // Number of messages
                 itemBuilder: (context, index) {
-                  return MessageTile(
-                    sender: 'Sender ${index + 1}',
-                    subject: 'Message Subject ${index + 1}',
-                    time: '${index + 1} min ago',
+                  return InkWell(
+                    onTap: () {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: Text('Message from Sender ${index + 1}'),
+                            content: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text('Subject: Message Subject ${index + 1}'),
+                                const SizedBox(height: 10),
+                                const Text(
+                                    'This is the detailed content of the message.'),
+                              ],
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: const Text('Close'),
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    },
+                    child: MessageTile(
+                      sender: 'Sender ${index + 1}',
+                      subject: 'Message Subject ${index + 1}',
+                      time: '${index + 1} min ago',
+                    ),
                   );
                 },
               ),
@@ -72,17 +107,17 @@ class MessageTile extends StatelessWidget {
   final String time;
 
   const MessageTile({
-    super.key,
+    Key? key,
     required this.sender,
     required this.subject,
     required this.time,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(12),
-      margin: const EdgeInsets.only(bottom: 8),
+      margin: const EdgeInsets.only(bottom: 10, left: 100, right: 100),
       decoration: BoxDecoration(
         color: const Color.fromARGB(255, 164, 186, 212),
         borderRadius: BorderRadius.circular(8),

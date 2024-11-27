@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(Inbox());
+  runApp(const Inbox());
 }
 
 class Inbox extends StatelessWidget {
+  const Inbox({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       title: 'Inbox',
       home: InboxScreen(),
     );
@@ -15,11 +17,13 @@ class Inbox extends StatelessWidget {
 }
 
 class InboxScreen extends StatelessWidget {
+  const InboxScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Inbox'),
+        title: const Text('Inbox'),
         centerTitle: true,
       ),
       body: Padding(
@@ -28,19 +32,19 @@ class InboxScreen extends StatelessWidget {
           children: [
             // Header Section
             Container(
-              padding: EdgeInsets.all(16),
+              padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
                 color: const Color.fromARGB(255, 118, 167, 207),
                 borderRadius: BorderRadius.circular(8),
               ),
-              child: Center(
+              child: const Center(
                 child: Text(
                   'Check your messages!',
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
               ),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
 
             // Message List
             Expanded(
@@ -68,17 +72,17 @@ class MessageTile extends StatelessWidget {
   final String time;
 
   const MessageTile({
-    Key? key,
+    super.key,
     required this.sender,
     required this.subject,
     required this.time,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(12),
-      margin: EdgeInsets.only(bottom: 8),
+      padding: const EdgeInsets.all(12),
+      margin: const EdgeInsets.only(bottom: 8),
       decoration: BoxDecoration(
         color: const Color.fromARGB(255, 164, 186, 212),
         borderRadius: BorderRadius.circular(8),
@@ -92,17 +96,17 @@ class MessageTile extends StatelessWidget {
               children: [
                 Text(
                   sender,
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                  style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
-                SizedBox(height: 4),
+                const SizedBox(height: 4),
                 Text(subject),
               ],
             ),
           ),
-          SizedBox(width: 8),
+          const SizedBox(width: 8),
           Text(
             time,
-            style: TextStyle(color: const Color.fromARGB(255, 129, 174, 241)),
+            style: const TextStyle(color: Color.fromARGB(255, 129, 174, 241)),
           ),
         ],
       ),

@@ -14,7 +14,8 @@ class GlobalFontSize {
   static var subheading = GoogleFonts.signika(fontWeight: FontWeight.bold, fontSize: 24, height: 1.2);
   static var subheading2 = GoogleFonts.signika(fontWeight: FontWeight.bold, fontSize: 18, height: 1);
   static var large = GoogleFonts.sourceSans3(fontSize: 16, height: 1.5);
-  static var standard = GoogleFonts.sourceSans3(fontSize: 14, height: 1.25);
+  static var standard = GoogleFonts.sourceSans3(fontWeight: FontWeight.bold, fontSize: 14, height: 1.25);
+  static var standard2 = GoogleFonts.sourceSans3(fontSize: 14.0, height: 1.25);
   static var button = GoogleFonts.sourceSans3(fontWeight: FontWeight.bold, fontSize: 14, height: 1.25);
   static var small = GoogleFonts.sourceSans3(fontSize: 10, height: 1);
 }

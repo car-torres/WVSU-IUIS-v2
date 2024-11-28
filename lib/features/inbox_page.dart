@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:wvsu_iuis_v2/features/theme.dart';
 
 void main() {
   runApp(const Inbox());
@@ -9,9 +10,19 @@ class Inbox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       title: 'Inbox',
-      home: InboxScreen(),
+      theme: ThemeData(
+        colorScheme: const ColorScheme.light(
+          primary: GlobalColor.brand,
+          secondary: GlobalColor.accentOne,
+          surface: GlobalColor.shadeLight,
+          surfaceVariant: GlobalColor.gray,
+          onSurface: GlobalColor.shadeDark,
+        ),
+        useMaterial3: true,
+      ),
+      home: const InboxScreen(),
     );
   }
 }
@@ -24,16 +35,17 @@ class InboxScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Inbox'),
+        titleTextStyle: GlobalFontSize.heading.copyWith(color: Colors.white),
+        backgroundColor: GlobalColor.accentOne,
         centerTitle: true,
       ),
       drawer: Drawer(
-        // Adding the Drawer
         child: ListView(
           padding: EdgeInsets.zero,
           children: <Widget>[
             const DrawerHeader(
               decoration: BoxDecoration(
-                color: Colors.blue,
+                color: GlobalColor.brand,
               ),
               child: Text(
                 'Menu',
@@ -46,14 +58,14 @@ class InboxScreen extends StatelessWidget {
             ListTile(
               title: const Text('Inbox'),
               onTap: () {
-                Navigator.pop(context); // Close the drawer
+                Navigator.pop(context);
               },
             ),
             ListTile(
               title: const Text('Settings'),
               onTap: () {
-                Navigator.pop(context); // Close the drawer
-                // Add your settings page navigation logic here
+                Navigator.pop(context);
+                // Add settings page navigation logic here
               },
             ),
           ],
@@ -65,25 +77,21 @@ class InboxScreen extends StatelessWidget {
           children: [
             // Header Section
             Container(
-              height: 50,
-              padding: const EdgeInsets.only(
-                  left: 5.0, right: 5.0, top: 10.0, bottom: 10.0),
-              margin: const EdgeInsets.only(left: 250, right: 250),
+              height: 45,
+              padding: const EdgeInsets.all(0),
+              margin: const EdgeInsets.symmetric(horizontal: 16),
               decoration: BoxDecoration(
-                color: const Color.fromARGB(255, 118, 167, 207),
-                borderRadius: BorderRadius.circular(8),
+                color: GlobalColor.gray,
+                borderRadius: BorderRadius.zero,
               ),
-              child: const Center(
+              child: Center(
                 child: Text(
                   'Check your messages!',
-                  style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Color.fromARGB(255, 255, 255, 255)),
+                  style: GlobalFontSize.subheading,
                 ),
               ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 10),
 
             // Message List
             Expanded(
@@ -97,6 +105,7 @@ class InboxScreen extends StatelessWidget {
                         builder: (BuildContext context) {
                           return AlertDialog(
                             title: Text('Message from Sender ${index + 1}'),
+                            titleTextStyle: GlobalFontSize.subheading2,
                             content: Column(
                               mainAxisSize: MainAxisSize.min,
                               children: [
@@ -148,35 +157,16 @@ class MessageTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(12),
-      margin: const EdgeInsets.only(bottom: 10, left: 100, right: 100),
-      decoration: BoxDecoration(
-        color: const Color.fromARGB(255, 164, 186, 212),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  sender,
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 4),
-                Text(subject),
-              ],
-            ),
-          ),
-          const SizedBox(width: 8),
-          Text(
-            time,
-            style: const TextStyle(color: Color.fromARGB(255, 129, 174, 241)),
-          ),
-        ],
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+      child: Card(
+        child: ListTile(
+          title: Text(sender),
+          titleTextStyle: GlobalFontSize.subheading2
+              .copyWith(color: const Color(0xFF132033)),
+          subtitle: Text(subject),
+          trailing: Text(time),
+        ),
       ),
     );
   }

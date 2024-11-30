@@ -25,7 +25,7 @@ class _HomepageState extends State<Homepage> {
     const Account(),
     const Academics(),
     const Enrollment(),
-    const Inbox()
+    const Inbox(),
   ];
 
   Widget? _currentPage;

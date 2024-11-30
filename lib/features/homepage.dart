@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
-import 'package:localstorage/localstorage.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:wvsu_iuis_v2/features/components/themed_text.dart';
-import 'package:wvsu_iuis_v2/features/login_page.dart';
 import 'package:wvsu_iuis_v2/features/pages/academics.dart';
 import 'package:wvsu_iuis_v2/features/pages/account.dart';
 import 'package:wvsu_iuis_v2/features/pages/dashboard.dart';

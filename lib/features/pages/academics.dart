@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:wvsu_iuis_v2/features/components/custom_card.dart';
 
 class Academics extends StatelessWidget {
   const Academics({super.key});
@@ -12,13 +13,6 @@ class Academics extends StatelessWidget {
       ),
       body: Row(
         children: [
-          // Sidebar or navigation area
-          Expanded(
-            flex: 2,
-            child:
-                SideMenu(), // Make sure you have this widget implemented or replace it
-          ),
-          // Main content area
           Expanded(
             flex: 5,
             child: Padding(

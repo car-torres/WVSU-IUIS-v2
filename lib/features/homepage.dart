@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:localstorage/localstorage.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:wvsu_iuis_v2/features/components/themed_text.dart';
 import 'package:wvsu_iuis_v2/features/pages/academics.dart';
@@ -80,6 +81,7 @@ class _HomepageState extends State<Homepage> {
               ),
               trailing: TextButton(
                   onPressed: () {
+                    localStorage.clear();
                     context.go('/login');
                   },
                   style: const ButtonStyle(
@@ -99,7 +101,7 @@ class _HomepageState extends State<Homepage> {
                               duration: const Duration(microseconds: 200),
                               width: _isExtended ? 55 : 0,
                               child: Text(
-                                'Close',
+                                'Log out',
                                 softWrap: false,
                                 textAlign: TextAlign.right,
                                 style: GlobalFontSize.button

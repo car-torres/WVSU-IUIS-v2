@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
-      title: 'Sign Up',
+      title: 'WVSU - Integrated University Information System v2',
       theme: ThemeData(
         colorScheme: const ColorScheme.light(
           primary: GlobalColor.brand,

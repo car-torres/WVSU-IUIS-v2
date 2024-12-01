@@ -12,5 +12,5 @@ GoRouter router() {
   return GoRouter(routes: [
     route('/login', const SignIn()),
     route('/', const Homepage()),
-  ], initialLocation: localStorage.getItem('is-logged-in') == null ? '/login' : '/');
+  ], initialLocation: localStorage.getItem('student-id') == null ? '/login' : '/');
 }

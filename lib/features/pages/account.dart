@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:localstorage/localstorage.dart';
+import 'package:wvsu_iuis_v2/features/components/custom_text_field.dart';
 import 'package:wvsu_iuis_v2/features/components/themed_text.dart';
 import 'package:wvsu_iuis_v2/features/theme.dart';
 import 'package:wvsu_iuis_v2/features/components/custom_card.dart';
@@ -8,69 +10,103 @@ class Account extends StatefulWidget {
   const Account({super.key});
 
   @override
-  _AccountState createState() => _AccountState();
+  State createState() => _AccountState();
 }
 
 class _AccountState extends State<Account> {
-  final TextEditingController _oldPasswordController = TextEditingController();
-  final TextEditingController _newPasswordController = TextEditingController();
-  String? _passwordError;
-  bool _isPasswordValid = true;
+  String _oldPassword = "";
+  String _newPassword = "";
 
-  Future<void> _validatePassword() async {
-    final studentID = '2022M0128'; // Replace with dynamic student ID
-    final oldPassword = _oldPasswordController.text;
+  Future<void> _validatePassword(BuildContext context) async {
+    final studentID = localStorage.getItem('student-id') ?? '';
 
+    String? errorMessage =
+        await Database.validatePassword(studentID, _oldPassword);
     // Validate password from Firebase
-    final errorMessage = await Database.validatePassword(studentID, oldPassword);
-    setState(() {
-      _passwordError = errorMessage;
-    });
-  }
 
-  bool _validateNewPassword(String password) {
-    final regex =
-        RegExp(r'^(?=.*[!@#$%^&*(),.?":{}|<>])(?=.*[A-Z])(?=.*[0-9]).{8,}$');
-    return regex.hasMatch(password);
-  }
+    if (!context.mounted) return;
 
-  Future<void> _showSuccessPopup(BuildContext context) async {
-    await showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-          contentPadding: const EdgeInsets.all(16),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ThemedText(
-                'Password changed successfully',
-                size: GlobalFontSize.standard,
-                color: GlobalColor.accentOne,
-              ),
-              const SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: const Text('OK'),
-              ),
-            ],
-          ),
-        );
-      },
-    );
+    if (errorMessage != null) {
+      await showDialog<String>(
+          context: context,
+          builder: (BuildContext context) => AlertDialog(
+                title: ThemedText("Password Change Error",
+                    size: GlobalFontSize.subheading),
+                content: ThemedText(errorMessage ?? '',
+                    size: GlobalFontSize.standard),
+                actions: [
+                  TextButton(
+                      onPressed: () => Navigator.pop(context, 'Close'),
+                      child: const Text('Close'))
+                ],
+              ));
+      return;
+    }
+
+    if (!RegExp(r'^(?=.*[!@#$%^&*(),.?":{}|<>])(?=.*[A-Z])(?=.*[0-9]).{8,}$')
+        .hasMatch(_newPassword)) {
+      await showDialog<String>(
+          context: context,
+          builder: (BuildContext context) => AlertDialog(
+                title: ThemedText("Password Change Error",
+                    size: GlobalFontSize.subheading),
+                content: ThemedText(
+                    'Passwords must contain 1 special character, 1 uppercase letter, and 1 number.',
+                    size: GlobalFontSize.standard),
+                actions: [
+                  TextButton(
+                      onPressed: () => Navigator.pop(context, 'Close'),
+                      child: const Text('Close'))
+                ],
+              ));
+      return;
+    }
+
+    errorMessage = await Database.update(studentID, 'password', _newPassword);
+
+    if (!context.mounted) return;
+    if (errorMessage != null) {
+      await showDialog<String>(
+          context: context,
+          builder: (BuildContext context) => AlertDialog(
+                title: ThemedText("Password Change Error",
+                    size: GlobalFontSize.subheading),
+                content: ThemedText(errorMessage ?? '',
+                    size: GlobalFontSize.standard),
+                actions: [
+                  TextButton(
+                      onPressed: () => Navigator.pop(context, 'Close'),
+                      child: const Text('Close'))
+                ],
+              ));
+      return;
+    }
+
+    await showDialog<String>(
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+              title: ThemedText("Password Change Success",
+                  size: GlobalFontSize.subheading),
+              content: ThemedText('Password Changed Successfully',
+                  size: GlobalFontSize.standard),
+              actions: [
+                TextButton(
+                    onPressed: () => Navigator.pop(context, 'Close'),
+                    child: const Text('Close'))
+              ],
+            ));
   }
 
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          ThemedText('Account Information', size: GlobalFontSize.heading),
+          ThemedText(
+            'Account Information',
+            size: GlobalFontSize.heading,
+          ),
           const SizedBox(height: 24),
           CustomCard(
             child: Column(
@@ -103,12 +139,13 @@ class _AccountState extends State<Account> {
                             child: RichText(
                               text: TextSpan(
                                 style: DefaultTextStyle.of(context).style,
-                                children: [
-                                  const TextSpan(
+                                children: const [
+                                  TextSpan(
                                     text: 'Student ID: ',
-                                    style: TextStyle(fontWeight: FontWeight.bold),
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold),
                                   ),
-                                  const TextSpan(text: '2022M0128'),
+                                  TextSpan(text: '2022M0128'),
                                 ],
                               ),
                             ),
@@ -116,16 +153,22 @@ class _AccountState extends State<Account> {
                         ],
                       ),
                     ),
-                    ElevatedButton(
+                    TextButton(
                       onPressed: () {
                         // Add edit functionality here
                       },
-                      child: const Text('Edit Personal Information'),
+                      style: GlobalStyles.buttonStyle,
+                      child: ThemedText(
+                        'Edit Personal Information',
+                        size: GlobalFontSize.button,
+                        color: GlobalColor.shadeLight,
+                      ),
                     ),
                   ],
                 ),
                 const SizedBox(height: 24),
-                ThemedText('Academic Information', size: GlobalFontSize.subheading),
+                ThemedText('Academic Information',
+                    size: GlobalFontSize.subheading2),
                 const SizedBox(height: 8),
                 Opacity(
                   opacity: 0.8,
@@ -135,11 +178,13 @@ class _AccountState extends State<Account> {
                       RichText(
                         text: TextSpan(
                           style: DefaultTextStyle.of(context).style,
-                          children: [
-                            const TextSpan(
+                          children: const [
+                            TextSpan(
                                 text: 'Program/Degree: ',
                                 style: TextStyle(fontWeight: FontWeight.bold)),
-                            const TextSpan(text: 'Bachelor of Science in Computer Science'),
+                            TextSpan(
+                                text:
+                                    'Bachelor of Science in Computer Science'),
                           ],
                         ),
                       ),
@@ -147,11 +192,11 @@ class _AccountState extends State<Account> {
                       RichText(
                         text: TextSpan(
                           style: DefaultTextStyle.of(context).style,
-                          children: [
-                            const TextSpan(
+                          children: const [
+                            TextSpan(
                                 text: 'Year Level: ',
                                 style: TextStyle(fontWeight: FontWeight.bold)),
-                            const TextSpan(text: '3rd year'),
+                            TextSpan(text: '3rd year'),
                           ],
                         ),
                       ),
@@ -159,11 +204,11 @@ class _AccountState extends State<Account> {
                       RichText(
                         text: TextSpan(
                           style: DefaultTextStyle.of(context).style,
-                          children: [
-                            const TextSpan(
+                          children: const [
+                            TextSpan(
                                 text: 'Status: ',
                                 style: TextStyle(fontWeight: FontWeight.bold)),
-                            const TextSpan(text: 'Regular'),
+                            TextSpan(text: 'Regular'),
                           ],
                         ),
                       ),
@@ -171,7 +216,8 @@ class _AccountState extends State<Account> {
                   ),
                 ),
                 const SizedBox(height: 24),
-                ThemedText('Personal Information', size: GlobalFontSize.subheading),
+                ThemedText('Personal Information',
+                    size: GlobalFontSize.subheading2),
                 const SizedBox(height: 8),
                 Opacity(
                   opacity: 0.8,
@@ -181,12 +227,12 @@ class _AccountState extends State<Account> {
                       RichText(
                         text: TextSpan(
                           style: DefaultTextStyle.of(context).style,
-                          children: [
-                            const TextSpan(
+                          children: const [
+                            TextSpan(
                               text: 'Email: ',
                               style: TextStyle(fontWeight: FontWeight.bold),
                             ),
-                            const TextSpan(
+                            TextSpan(
                               text: 'reiebenezer.duhina@wvsu.edu.ph',
                             ),
                           ],
@@ -196,12 +242,12 @@ class _AccountState extends State<Account> {
                       RichText(
                         text: TextSpan(
                           style: DefaultTextStyle.of(context).style,
-                          children: [
-                            const TextSpan(
+                          children: const [
+                            TextSpan(
                               text: 'Address: ',
                               style: TextStyle(fontWeight: FontWeight.bold),
                             ),
-                            const TextSpan(
+                            TextSpan(
                               text: 'Purok 1, Yapo, Barbaza, Antique 5706',
                             ),
                           ],
@@ -220,45 +266,32 @@ class _AccountState extends State<Account> {
               children: [
                 ThemedText('Change Password', size: GlobalFontSize.subheading),
                 const SizedBox(height: 16),
-                TextField(
-                  controller: _oldPasswordController,
-                  obscureText: true,
-                  decoration: InputDecoration(
-                    labelText: 'Old Password',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    errorText: _passwordError,
-                  ),
-                ),
-                const SizedBox(height: 16),
-                TextField(
-                  controller: _newPasswordController,
+                CustomTextField(
+                  label: 'Old Password',
                   obscureText: true,
                   onChanged: (value) {
                     setState(() {
-                      _isPasswordValid = _validateNewPassword(value);
+                      _oldPassword = value;
                     });
                   },
-                  decoration: InputDecoration(
-                    labelText: 'New Password',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    errorText: _isPasswordValid
-                        ? null
-                        : 'Password must contain 1 special character, 1 uppercase, and 1 number.',
-                  ),
                 ),
                 const SizedBox(height: 16),
-                ElevatedButton(
-                  onPressed: () async {
-                    await _validatePassword();
-                    if (_isPasswordValid && _passwordError == null) {
-                      await _showSuccessPopup(context);
-                    }
+                CustomTextField(
+                  label: 'New Password',
+                  obscureText: true,
+                  onChanged: (value) {
+                    setState(() {
+                      _newPassword = value;
+                    });
                   },
-                  child: const Text('Update Password'),
+                ),
+                const SizedBox(height: 16),
+                TextButton(
+                  style: GlobalStyles.buttonStyle,
+                  onPressed: () => _validatePassword(context),
+                  child: ThemedText('Update Password',
+                      size: GlobalFontSize.button,
+                      color: GlobalColor.shadeLight),
                 ),
               ],
             ),

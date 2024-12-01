@@ -10,19 +10,31 @@ class GlobalColor {
 }
 
 class GlobalFontSize {
-  static var heading = GoogleFonts.signika(fontWeight: FontWeight.bold, fontSize: 30, height: 2.25);
-  static var subheading = GoogleFonts.signika(fontWeight: FontWeight.bold, fontSize: 24, height: 1.2);
-  static var subheading2 = GoogleFonts.signika(fontWeight: FontWeight.bold, fontSize: 18, height: 1);
+  static var heading = GoogleFonts.signika(
+      fontWeight: FontWeight.bold, fontSize: 30, height: 2.25);
+  static var subheading = GoogleFonts.signika(
+      fontWeight: FontWeight.bold, fontSize: 24, height: 1.2);
+  static var subheading2 =
+      GoogleFonts.signika(fontWeight: FontWeight.bold, fontSize: 18, height: 1);
   static var large = GoogleFonts.sourceSans3(fontSize: 16, height: 1.5);
-  static var standard = GoogleFonts.sourceSans3(fontWeight: FontWeight.bold, fontSize: 14, height: 1.25);
-  static var standard2 = GoogleFonts.sourceSans3(fontSize: 14.0, height: 1.25);
-  static var button = GoogleFonts.sourceSans3(fontWeight: FontWeight.bold, fontSize: 14, height: 1.25);
+  static var standard = GoogleFonts.sourceSans3(fontSize: 14.0, height: 1.25);
+  static var button = GoogleFonts.sourceSans3(
+      fontWeight: FontWeight.bold, fontSize: 14, height: 1.25);
   static var small = GoogleFonts.sourceSans3(fontSize: 10, height: 1);
 }
 
 class GlobalStyles {
   static var inputBorder = OutlineInputBorder(
-    borderRadius: BorderRadius.circular(8),
-    borderSide: const BorderSide(style: BorderStyle.solid, color: GlobalColor.gray)
+      borderRadius: BorderRadius.circular(8),
+      borderSide:
+          const BorderSide(style: BorderStyle.solid, color: GlobalColor.gray));
+
+  static var buttonStyle = ButtonStyle(
+    shape: WidgetStatePropertyAll(
+        RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))),
+    padding: const WidgetStatePropertyAll(
+        EdgeInsets.symmetric(vertical: 8, horizontal: 16)),
+    backgroundColor: const WidgetStatePropertyAll(GlobalColor.brand),
+    textStyle: WidgetStatePropertyAll(GlobalFontSize.button.copyWith(color: GlobalColor.shadeLight))
   );
 }

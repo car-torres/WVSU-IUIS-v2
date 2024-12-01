@@ -16,7 +16,7 @@ class Database {
     final event = await _db.collection("students")
       .where("studentID", isEqualTo: studentID.toUpperCase())
       .get();
-
+  
     if (event.docs.isEmpty) {
       return "Student ID Entry Invalid. It's either that your ID\ndoes not exist in the database, or you have\nentered the incorrect ID.";
     }
@@ -34,6 +34,24 @@ class Database {
     final dbPassword = student.data()["password"];
     if (dbPassword != password) {
       return "Password is incorrect.";
+    }
+
+    return null;
+  }
+
+  static Future<String?> update(String studentID, String field, String newValue) async {
+    var student = await validateExistingStudentID(studentID);
+
+    if (student.runtimeType == String) {
+      return student;
+    }
+
+    try {
+      (student as QueryDocumentSnapshot).reference.update({
+        field: newValue
+      });
+    } catch (e) {
+      return e.toString();
     }
 
     return null;

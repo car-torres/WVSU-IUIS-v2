@@ -6,52 +6,25 @@ class Academics extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Academics'),
-        backgroundColor: Colors.black,
-      ),
-      body: Row(
-        children: [
-          Expanded(
-            flex: 5,
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  ProfileSection(),
-                  const SizedBox(height: 16),
-                  Expanded(
-                    child: ListView(
-                      children: [
-                        ClassOfferingsSection(),
-                        const SizedBox(height: 16),
-                        MyGradesSection(),
-                        const SizedBox(height: 16),
-                        MyScheduleSection(),
-                        const SizedBox(height: 16),
-                        ChangePasswordSection(), // Example 1: Password change with validation
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        ProfileSection(),
+        const SizedBox(height: 16),
+        Expanded(
+          child: ListView(
+            children: [
+              ClassOfferingsSection(),
+              const SizedBox(height: 16),
+              MyGradesSection(),
+              const SizedBox(height: 16),
+              MyScheduleSection(),
+              const SizedBox(height: 16),
+              ChangePasswordSection(), // Example 1: Password change with validation
+            ],
           ),
-        ],
-      ),
-    );
-  }
-}
-
-// Sidebar (Placeholder)
-class SideMenu extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: Colors.blueGrey,
-      child: const Center(child: Text('Side Menu')),
+        ),
+      ],
     );
   }
 }
@@ -73,7 +46,7 @@ class _ProfileSectionState extends State<ProfileSection> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
+    return CustomCard(
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -92,7 +65,8 @@ class _ProfileSectionState extends State<ProfileSection> {
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             const Text('Student ID: 2022M0128'),
-            const Text('Program/Degree: Bachelor of Science in Computer Science'),
+            const Text(
+                'Program/Degree: Bachelor of Science in Computer Science'),
             const Text('Year Level: 3rd Year'),
             const Text('Status: Enrolled / Regular'),
           ],

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:wvsu_iuis_v2/features/theme.dart';
 
 class Inbox extends StatefulWidget {
   const Inbox({super.key});
@@ -125,5 +126,3 @@ class TrashPage extends StatelessWidget {
     );
   }
 }
-
-

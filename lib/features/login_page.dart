@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hyperlink/hyperlink.dart';
+import 'package:localstorage/localstorage.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:simple_gradient_text/simple_gradient_text.dart';
 import 'package:wvsu_iuis_v2/features/backend/database.dart';
+import 'package:wvsu_iuis_v2/features/components/custom_text_field.dart';
 import 'package:wvsu_iuis_v2/features/components/helpers.dart';
 import 'package:wvsu_iuis_v2/features/components/themed_text.dart';
 import 'package:wvsu_iuis_v2/features/theme.dart';
@@ -128,13 +130,13 @@ class _SignInFormState extends State<SignIn>
           height: 4,
         ),
         ...withGap(height: 24, children: [
-          _textField(
+          CustomTextField(
             label: "Student ID",
             hint: "Example: 2024M0123",
             icon: PhosphorIconsBold.user,
             onChanged: (id) => _studentID = id,
           ),
-          _textField(
+          CustomTextField(
               label: "Password",
               icon: PhosphorIconsBold.key,
               obscureText: true,
@@ -173,14 +175,7 @@ class _SignInFormState extends State<SignIn>
                 )
               ]),
               child: TextButton(
-                  style: ButtonStyle(
-                    shape: WidgetStatePropertyAll(RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8))),
-                    padding: const WidgetStatePropertyAll(
-                        EdgeInsets.symmetric(vertical: 8, horizontal: 16)),
-                    backgroundColor:
-                        const WidgetStatePropertyAll(GlobalColor.brand),
-                  ),
+                  style: GlobalStyles.buttonStyle,
                   onPressed: () async => await _validateLogin(context),
                   child: ThemedText("Log in",
                       size: GlobalFontSize.button,
@@ -199,7 +194,7 @@ class _SignInFormState extends State<SignIn>
           height: 4,
         ),
         ...withGap(height: 24, children: [
-          _textField(
+          CustomTextField(
             label: "Email",
             hint: "firstname.lastname@wvsu.edu.ph",
             icon: PhosphorIconsBold.envelope,
@@ -218,14 +213,7 @@ class _SignInFormState extends State<SignIn>
                 )
               ]),
               child: TextButton(
-                  style: ButtonStyle(
-                    shape: WidgetStatePropertyAll(RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8))),
-                    padding: const WidgetStatePropertyAll(
-                        EdgeInsets.symmetric(vertical: 8, horizontal: 16)),
-                    backgroundColor:
-                        const WidgetStatePropertyAll(GlobalColor.brand),
-                  ),
+                  style: GlobalStyles.buttonStyle,
                   onPressed: () {},
                   child: ThemedText("Send Verification Message",
                       size: GlobalFontSize.button,
@@ -237,40 +225,14 @@ class _SignInFormState extends State<SignIn>
     );
   }
 
-  TextFormField _textField({
-    String? label,
-    String? hint,
-    void Function(String)? onChanged,
-    PhosphorFlatIconData? icon,
-    bool obscureText = false,
-  }) {
-    return TextFormField(
-      style: GlobalFontSize.standard,
-      obscureText: obscureText,
-      onChanged: onChanged,
-      decoration: InputDecoration(
-        suffixIcon: icon != null ? PhosphorIcon(icon, size: 14) : null,
-        labelText: label,
-        hintText: hint,
-        floatingLabelBehavior: FloatingLabelBehavior.always,
-        labelStyle: GlobalFontSize.standard,
-        enabledBorder: GlobalStyles.inputBorder,
-        focusedBorder: GlobalStyles.inputBorder,
-        errorBorder: GlobalStyles.inputBorder,
-        focusedErrorBorder: GlobalStyles.inputBorder,
-        hintStyle: GlobalFontSize.standard
-            .copyWith(color: GlobalColor.shadeDark.withAlpha(128)),
-      ),
-    );
-  }
-
-   _validateLogin(BuildContext context) async {
+  _validateLogin(BuildContext context) async {
     String? v = _fieldsAreEmpty();
     if (v != null) {
       await showDialog<String>(
           context: context,
           builder: (BuildContext context) => AlertDialog(
-                title: ThemedText("Login Error", size: GlobalFontSize.subheading),
+                title:
+                    ThemedText("Login Error", size: GlobalFontSize.subheading),
                 content: ThemedText(v, size: GlobalFontSize.standard),
                 actions: [
                   TextButton(
@@ -286,8 +248,10 @@ class _SignInFormState extends State<SignIn>
         await showDialog<String>(
             context: context,
             builder: (BuildContext context) => AlertDialog(
-                  title: ThemedText("Login Error", size: GlobalFontSize.subheading),
-                  content: ThemedText(val ?? 'Error message', size: GlobalFontSize.standard),
+                  title: ThemedText("Login Error",
+                      size: GlobalFontSize.subheading),
+                  content: ThemedText(val ?? 'Error message',
+                      size: GlobalFontSize.standard),
                   actions: [
                     TextButton(
                         onPressed: () => Navigator.pop(context, 'Close'),
@@ -299,7 +263,8 @@ class _SignInFormState extends State<SignIn>
       }
 
       if (context.mounted) {
-        context.go('/home');
+        localStorage.setItem('student-id', _studentID);
+        context.go('/');
       }
     });
   }

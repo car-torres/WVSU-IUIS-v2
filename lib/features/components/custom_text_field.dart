@@ -9,6 +9,7 @@ class CustomTextField extends StatelessWidget {
   final PhosphorFlatIconData? _icon;
   final bool _obscureText;
   final bool _enabled;
+  final String? _initialValue;
 
   const CustomTextField(
       {super.key,
@@ -18,13 +19,15 @@ class CustomTextField extends StatelessWidget {
       PhosphorFlatIconData? icon,
       bool obscureText = false,
       final String? Function(String?)? validator,
-      final bool enabled = true})
+      final bool enabled = true, 
+      final String? initialValue})
       : _obscureText = obscureText,
         _onChanged = onChanged,
         _hint = hint,
         _label = label,
         _icon = icon,
-        _enabled = enabled;
+        _enabled = enabled,
+        _initialValue = initialValue;
 
   @override
   Widget build(BuildContext context) {
@@ -33,6 +36,7 @@ class CustomTextField extends StatelessWidget {
       obscureText: _obscureText,
       onChanged: _onChanged,
       enabled: _enabled,
+      initialValue: _initialValue,
       decoration: InputDecoration(
         suffixIcon: _icon != null ? PhosphorIcon(_icon, size: 14) : null,
         labelText: _label,

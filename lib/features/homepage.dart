@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hyperlink/hyperlink.dart';
 import 'package:localstorage/localstorage.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:wvsu_iuis_v2/features/components/themed_text.dart';
@@ -168,12 +169,25 @@ class _HomepageState extends State<Homepage> {
                   child: SidebarCard(children: [
                     ThemedText('Upcoming Events',
                         size: GlobalFontSize.subheading2),
+
+                    // Upcoming Events here
                   ]),
                 ),
                 const SizedBox(height: 24),
                 Expanded(
                   child: SidebarCard(children: [
                     ThemedText('Messages', size: GlobalFontSize.subheading2),
+                    Expanded(
+                      child: Align(
+                        alignment: Alignment.bottomLeft,
+                        child: HyperLink(
+                          text: '[Open Messages in Inbox](/inbox)',
+                          linkStyle: GlobalFontSize.standard.copyWith(color: GlobalColor.brand),
+                          linkCallBack: (msg) => context.go(msg),
+                        ),
+                      ),
+                    )
+                    // Messages Inbox (hyperlink to the inbox section)
                   ]),
                 ),
                 const SizedBox(height: 24),
@@ -181,6 +195,8 @@ class _HomepageState extends State<Homepage> {
                   child: SidebarCard(children: [
                     ThemedText('Documents', size: GlobalFontSize.subheading2),
                   ]),
+
+                  // Downloadable documents
                 )
               ],
             ),
@@ -234,6 +250,7 @@ final class SidebarCard extends StatelessWidget {
       ),
       padding: const EdgeInsets.all(16),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: children,
       ),
     );

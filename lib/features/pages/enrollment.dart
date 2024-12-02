@@ -158,7 +158,7 @@ class _EnrollmentState extends State<Enrollment> {
                       width: 608,
                       child: CustomTextField(
                         label: 'Payment Method',
-                        enabled: false,
+                        initialValue: 'Single Payment',
                       )),
                   const SizedBox(height: 16),
                   Row(
@@ -174,6 +174,7 @@ class _EnrollmentState extends State<Enrollment> {
                           width: 240,
                           child: OutlinedButton(
                               style: GlobalStyles.buttonStyle.copyWith(
+                                backgroundColor: const WidgetStatePropertyAll(GlobalColor.shadeLight),
                                   side: const WidgetStatePropertyAll(
                                 BorderSide(
                                   color: GlobalColor.brand,
@@ -183,7 +184,7 @@ class _EnrollmentState extends State<Enrollment> {
                               child: ThemedText(
                                 'Upload Scholarship Documents',
                                 size: GlobalFontSize.button,
-                                color: GlobalColor.shadeLight,
+                                color: GlobalColor.brand,
                               ))),
                     ],
                   ),

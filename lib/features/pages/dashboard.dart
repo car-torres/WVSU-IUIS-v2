@@ -1,4 +1,10 @@
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
+
+import 'dart:typed_data';
+import 'dart:html' as html; // For web download
 import 'package:flutter/material.dart';
+// import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
 import 'package:go_router/go_router.dart';
 import 'package:wvsu_iuis_v2/features/components/themed_text.dart';
 import 'package:wvsu_iuis_v2/features/theme.dart';
@@ -76,15 +82,85 @@ class Dashboard extends StatelessWidget {
       },
     ];
 
-    // Total units calculation
     final int totalUnits =
         subjects.fold(0, (sum, subject) => sum + (subject["units"] as int));
+
+        Future<void> _downloadPage() async {
+      final pdf = pw.Document();
+
+      pdf.addPage(
+        pw.Page(
+          build: (pw.Context context) {
+            return pw.Column(
+              crossAxisAlignment: pw.CrossAxisAlignment.start,
+              children: [
+                pw.Text(
+                  'Dashboard',
+                  style: pw.TextStyle(fontSize: 24, fontWeight: pw.FontWeight.bold),
+                ),
+                pw.SizedBox(height: 16),
+                pw.Text(
+                  'Student: Rei Ebenezer G. Duhina\nID: 2022M0128\nCourse: Bachelor of Science in Computer Science\nSemester: AY 2024-2025, 1st Semester',
+                  style: pw.TextStyle(fontSize: 16),
+                ),
+                pw.SizedBox(height: 16),
+                pw.Text(
+                  'Class Schedule',
+                  style: pw.TextStyle(fontSize: 20, fontWeight: pw.FontWeight.bold),
+                ),
+                pw.SizedBox(height: 8),
+                pw.Text('Total Units: $totalUnits', style: pw.TextStyle(fontSize: 16)),
+                pw.SizedBox(height: 16),
+                pw.Table(
+                  border: pw.TableBorder.all(),
+                  children: [
+                    pw.TableRow(
+                      children: [
+                        pw.Text('Code', style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+                        pw.Text('Description', style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+                        pw.Text('Faculty', style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+                        pw.Text('Time', style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+                        pw.Text('Room', style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+                      ],
+                    ),
+                    ...subjects.map((subject) {
+                      return pw.TableRow(
+                        children: [
+                          pw.Text(subject['code'] as String),
+                          pw.Text(subject['description'] as String),
+                          pw.Text(subject['faculty'] as String),
+                          pw.Text(subject['time'] as String),
+                          pw.Text(subject['room'] as String),
+                        ],
+                      );
+                    }).toList(),
+                  ],
+                ),
+              ],
+            );
+          },
+        ),
+      );
+
+      final Uint8List pdfData = await pdf.save();
+
+      final blob = html.Blob([pdfData]);
+      final url = html.Url.createObjectUrlFromBlob(blob);
+      final anchor = html.AnchorElement(href: url)
+        ..target = '_blank'
+        ..download = 'class_schedule.pdf'
+        ..click();
+      html.Url.revokeObjectUrl(url);
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Schedule downloaded successfully!')),
+      );
+    }
 
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Dashboard Title
           ThemedText('Dashboard', size: GlobalFontSize.heading),
           const SizedBox(height: 24),
 
@@ -215,10 +291,10 @@ class Dashboard extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 24),
-
-          // Table View / Graph View
+          
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Row(
                 children: [
@@ -245,14 +321,36 @@ class Dashboard extends StatelessWidget {
                 children: [
                   Text(
                     'Total: $totalUnits units',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(width: 16),
                   ElevatedButton(
                     onPressed: () {
-                      // Download schedule action
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: const Text("Download Confirmation"),
+                            content: const Text(
+                                "Are you sure you want to download your schedule?"),
+                            actions: [
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: const Text("Cancel"),
+                              ),
+                              ElevatedButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                  _downloadPage();
+                                },
+                                child: const Text("Download"),
+                              ),
+                            ],
+                          );
+                        },
+                      );
                     },
                     child: const Text('Download Schedule'),
                   ),
@@ -261,14 +359,11 @@ class Dashboard extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 16),
-
-          // Schedule Section
           CustomCard(
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Column(
                 children: [
-                  // Schedule Table
                   LayoutBuilder(
                     builder: (context, constraints) {
                       return SingleChildScrollView(

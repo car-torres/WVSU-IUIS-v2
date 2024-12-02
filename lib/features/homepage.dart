@@ -22,15 +22,34 @@ class _HomepageState extends State<Homepage> {
   int _selectedIndex = 0;
   bool _isExtended = false;
 
-  final _pages = [
-    const Dashboard(),
-    const Account(),
-    const Academics(),
-    const Enrollment(),
-    const Inbox(),
-  ];
+  final _pages = {
+    '/dashboard': const Dashboard(),
+    '/account': const Account(),
+    '/academics': const Academics(),
+    '/enrollment': const Enrollment(),
+    '/inbox': const Inbox(),
+  };
 
   Widget? _currentPage;
+
+  @override
+  void initState() {
+    super.initState();
+
+    void setPath() {
+      int index = [..._pages.keys].indexWhere(
+          (route) => GoRouter.of(context).state?.uri.toString() == route);
+      if (index == -1) index = 0;
+
+      setState(() {
+        _selectedIndex = index;
+        _currentPage = _pages.values.elementAt(index);
+      });
+    }
+
+    setPath();
+    GoRouter.of(context).routeInformationProvider.addListener(setPath);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -125,11 +144,8 @@ class _HomepageState extends State<Homepage> {
               extended: _isExtended,
               selectedIndex: _selectedIndex,
               minExtendedWidth: 200,
-              onDestinationSelected: (int index) {
-                setState(() {
-                  _selectedIndex = index;
-                  _currentPage = _pages[index];
-                });
+              onDestinationSelected: (index) {
+                context.go(_pages.keys.elementAt(index));
               },
             ),
           ),

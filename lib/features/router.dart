@@ -11,6 +11,10 @@ GoRouter router() {
 
   return GoRouter(routes: [
     route('/login', const SignIn()),
-    route('/', const Homepage()),
-  ], initialLocation: localStorage.getItem('student-id') == null ? '/login' : '/');
+    route('/dashboard', const Homepage()),
+    route('/account', const Homepage()),
+    route('/academics', const Homepage()),
+    route('/enrollment', const Homepage()),
+    route('/inbox', const Homepage()),
+  ], initialLocation: localStorage.getItem('student-id') == null ? '/login' : '/dashboard');
 }

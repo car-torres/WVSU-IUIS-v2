@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:wvsu_iuis_v2/features/components/themed_text.dart';
 import 'package:wvsu_iuis_v2/features/theme.dart';
 import 'package:wvsu_iuis_v2/features/components/custom_card.dart';
@@ -76,11 +77,12 @@ class Dashboard extends StatelessWidget {
                                   style: GlobalFontSize.standard,
                                 ),
                                 const SizedBox(height: 16),
-                                ElevatedButton(
+                                TextButton(
+                                  style: GlobalStyles.buttonStyle,
                                   onPressed: () {
-                                    // Navigate to account details page
+                                    context.go('/account');
                                   },
-                                  child: const Text('View Account Details'),
+                                  child: ThemedText('View Account Details', size: GlobalFontSize.button, color: GlobalColor.shadeLight),
                                 ),
                               ],
                             ),

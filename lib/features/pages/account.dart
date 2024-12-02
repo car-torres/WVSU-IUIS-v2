@@ -196,7 +196,7 @@ class _AccountState extends State<Account> {
                             TextSpan(
                                 text: 'Year Level: ',
                                 style: TextStyle(fontWeight: FontWeight.bold)),
-                            TextSpan(text: '3rd year'),
+                            TextSpan(text: 'Third Year'),
                           ],
                         ),
                       ),
@@ -209,6 +209,18 @@ class _AccountState extends State<Account> {
                                 text: 'Status: ',
                                 style: TextStyle(fontWeight: FontWeight.bold)),
                             TextSpan(text: 'Regular'),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      RichText(
+                        text: TextSpan(
+                          style: DefaultTextStyle.of(context).style,
+                          children: const [
+                            TextSpan(
+                                text: 'Section: ',
+                                style: TextStyle(fontWeight: FontWeight.bold)),
+                            TextSpan(text: 'B - AI'),
                           ],
                         ),
                       ),

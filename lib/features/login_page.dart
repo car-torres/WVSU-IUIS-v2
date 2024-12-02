@@ -264,7 +264,7 @@ class _SignInFormState extends State<SignIn>
 
       if (context.mounted) {
         localStorage.setItem('student-id', _studentID);
-        context.go('/');
+        context.go('/dashboard');
       }
     });
   }

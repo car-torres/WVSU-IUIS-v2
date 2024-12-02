@@ -28,6 +28,7 @@ class _EnrollmentState extends State<Enrollment> {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           ThemedText('Enrollment Confirmation', size: GlobalFontSize.heading),
           const SizedBox(height: 24),

@@ -36,28 +36,22 @@ class _HomepageState extends State<Homepage> {
   @override
   void initState() {
     super.initState();
+    int index = [..._pages.keys].indexWhere(
+        (route) => GoRouter.of(context).state?.uri.toString() == route);
+    if (index == -1) index = 0;
 
-    void setPath() {
-      int index = [..._pages.keys].indexWhere(
-          (route) => GoRouter.of(context).state?.uri.toString() == route);
-      if (index == -1) index = 0;
-
-      setState(() {
-        _selectedIndex = index;
-        _currentPage = _pages.values.elementAt(index);
-      });
-    }
-
-    setPath();
-    GoRouter.of(context).routeInformationProvider.addListener(setPath);
+    setState(() {
+      _selectedIndex = index;
+      _currentPage = _pages.values.elementAt(index);
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Row(children: [
+      body: Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
         Container(
-          padding: const EdgeInsets.all(24),
+          padding: const EdgeInsets.symmetric(vertical: 24),
           decoration: const BoxDecoration(
             image: DecorationImage(
                 image: AssetImage('assets/bg.jpg'), // Background image path
@@ -146,7 +140,10 @@ class _HomepageState extends State<Homepage> {
               selectedIndex: _selectedIndex,
               minExtendedWidth: 200,
               onDestinationSelected: (index) {
-                context.go(_pages.keys.elementAt(index));
+                setState(() {
+                  _selectedIndex = index;
+                  _currentPage = _pages.values.elementAt(index);
+                });
               },
             ),
           ),
@@ -159,7 +156,7 @@ class _HomepageState extends State<Homepage> {
               child: _currentPage ?? _pages[0],
             )),
         SizedBox(
-          width: 300,
+          width: 240,
           child: Padding(
             padding: const EdgeInsets.all(24),
             child: Column(
@@ -182,7 +179,8 @@ class _HomepageState extends State<Homepage> {
                         alignment: Alignment.bottomLeft,
                         child: HyperLink(
                           text: '[Open Messages in Inbox](/inbox)',
-                          linkStyle: GlobalFontSize.standard.copyWith(color: GlobalColor.brand),
+                          linkStyle: GlobalFontSize.standard
+                              .copyWith(color: GlobalColor.brand),
                           linkCallBack: (msg) => context.go(msg),
                         ),
                       ),

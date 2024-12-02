@@ -403,10 +403,14 @@ class Dashboard extends StatelessWidget {
                         ),
                         const SizedBox(height: 16),
                         ElevatedButton(
+                          style: GlobalStyles.buttonStyle,
                           onPressed: () {
                             // Navigate to grades page
                           },
-                          child: const Text('View Grades'),
+                          child: ThemedText('View Grades',
+                          size: GlobalFontSize.button,
+                          color: GlobalColor.shadeLight,
+                          ),
                         ),
                       ],
                     ),
@@ -450,6 +454,7 @@ class Dashboard extends StatelessWidget {
                   ),
                   const SizedBox(width: 16),
                   ElevatedButton(
+                    style: GlobalStyles.buttonStyle,
                     onPressed: () {
                       showDialog(
                         context: context,
@@ -477,7 +482,11 @@ class Dashboard extends StatelessWidget {
                         },
                       );
                     },
-                    child: const Text('Download Schedule'),
+                    child: ThemedText('Download Schedule',
+                    size: GlobalFontSize.button,
+                    color: GlobalColor.shadeLight,
+                    
+                    ),
                   ),
                 ],
               ),

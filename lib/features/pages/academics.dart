@@ -8,15 +8,17 @@ class Academics extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        ThemedText('Academics', size: GlobalFontSize.heading),
-        const SizedBox(
-          height: 24,
-        ),
-        const ClassOfferings()
-      ],
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ThemedText('Academics', size: GlobalFontSize.heading),
+          const SizedBox(
+            height: 24,
+          ),
+          const ClassOfferings()
+        ],
+      ),
     );
   }
 }

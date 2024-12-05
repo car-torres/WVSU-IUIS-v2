@@ -148,7 +148,7 @@ class _ClassOfferingsState extends State<ClassOfferings> {
                   classSection: 'BSCS 3B-AI',
                   subjectCode: 'BA 234',
                   subjectDescription: 'Technopreneurship',
-                  faculty: 'TBA',
+                  faculty: 'Minerva, John Cairo',
                   lecUnits: 3,
                   labUnits: 0,
                   schedules: [
@@ -161,7 +161,26 @@ class _ClassOfferingsState extends State<ClassOfferings> {
                         weekday: Weekday.wednesday,
                         startTime: const ScheduleTime(13, 0),
                         endTime: const ScheduleTime(14, 30),
-                        room: 'ICT 302'),
+                        room: ''),
+                  ]),
+                _acadsRow(
+                  classSection: 'BSCS 3B-AI',
+                  subjectCode: 'CC 206',
+                  subjectDescription: 'Application Development and Emerging Technologies',
+                  faculty: 'Mateo, John Christopher',
+                  lecUnits: 3,
+                  labUnits: 0,
+                  schedules: [
+                    Schedule(
+                        weekday: Weekday.tuesday,
+                        startTime: const ScheduleTime(13, 0),
+                        endTime: const ScheduleTime(15, 0),
+                        room: 'ICT 206'),
+                    Schedule(
+                        weekday: Weekday.thursday,
+                        startTime: const ScheduleTime(13, 0),
+                        endTime: const ScheduleTime(16, 0),
+                        room: ''),
                   ])
             ],
           )

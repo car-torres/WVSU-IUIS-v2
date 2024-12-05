@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:wvsu_iuis_v2/features/theme.dart';
+import 'package:wvsu_iuis_v2/features/components/custom_text_field.dart';
+import 'package:wvsu_iuis_v2/features/components/themed_text.dart';
+import 'package:wvsu_iuis_v2/features/theme.dart';
+import 'package:wvsu_iuis_v2/features/components/custom_card.dart';
 
 class Inbox extends StatefulWidget {
   const Inbox({super.key});
@@ -21,11 +25,11 @@ class _InboxState extends State<Inbox> with SingleTickerProviderStateMixin {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Inbox'),
+        title: ThemedText('Inbox', size: GlobalFontSize.heading),
         bottom: TabBar(
           controller: _tabController,
           tabs: const [
-            Tab(icon: Icon(Icons.drafts), text: 'Draft'),
+            Tab(icon: Icon(Icons.message), text:'Messages'),
             Tab(icon: Icon(Icons.send), text: 'Sent'),
             Tab(icon: Icon(Icons.delete), text: 'Trash'),
           ],
@@ -59,13 +63,13 @@ class DraftPage extends StatelessWidget {
         itemCount: 5, // Replace with your dynamic draft count
         itemBuilder: (context, index) {
           return ListTile(
-            leading: const Icon(Icons.drafts),
-            title: Text('Draft Message ${index + 1}'),
-            subtitle: const Text('This is a draft message.'),
+            leading: const Icon(Icons.message),
+            title: Text('Received Message ${index + 1}'),
+            subtitle: const Text('Scholarship Confirmation.'),
             onTap: () {
               // Handle navigation to the draft message details
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Opening Draft Message ${index + 1}')),
+                SnackBar(content: Text('Opening Message ${index + 1}')),
               );
             },
           );

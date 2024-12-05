@@ -89,72 +89,73 @@ class Dashboard extends StatelessWidget {
           const SizedBox(height: 24),
 
           // Account and GWA Row
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Left: Account Info
-              Expanded(
-                flex: 2,
-                child: CustomCard(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Row(
-                      children: [
-                        ClipOval(
-                          child: Image.network(
-                            'https://images.unsplash.com/photo-1730470316489-0379f25dfabb?q=80&w=1374&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', // Placeholder image
-                            width: 80,
-                            height: 80,
-                            fit: BoxFit.cover,
+          SizedBox(
+            height: 240,
+            child: Row(
+              children: [
+                // Left: Account Info
+                Expanded(
+                  flex: 1,
+                  child: CustomCard(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Row(
+                        children: [
+                          ClipOval(
+                            child: Image.network(
+                              'https://images.unsplash.com/photo-1730470316489-0379f25dfabb?q=80&w=1374&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', // Placeholder image
+                              width: 80,
+                              height: 80,
+                              fit: BoxFit.cover,
+                            ),
                           ),
-                        ),
-                        const SizedBox(width: 16),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              ThemedText(
-                                'Rei Ebenezer G. Duhina',
-                                size: GlobalFontSize.subheading,
-                                color: GlobalColor.accentOne,
-                              ),
-                              const SizedBox(height: 8),
-                              Opacity(
-                                opacity: 0.6,
-                                child: Text(
-                                  'Student ID: 2022M0128',
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                ThemedText(
+                                  'Rei Ebenezer G. Duhina',
+                                  size: GlobalFontSize.subheading,
+                                  color: GlobalColor.accentOne,
+                                ),
+                                const SizedBox(height: 8),
+                                Opacity(
+                                  opacity: 0.6,
+                                  child: Text(
+                                    'Student ID: 2022M0128',
+                                    style: GlobalFontSize.standard,
+                                  ),
+                                ),
+                                const SizedBox(height: 8),
+                                Text(
+                                  'Bachelor of Science in Computer Science\nENROLLED for AY 2024-2025, 1st Semester',
                                   style: GlobalFontSize.standard,
                                 ),
-                              ),
-                              const SizedBox(height: 8),
-                              Text(
-                                'Bachelor of Science in Computer Science\nENROLLED for AY 2024-2025, 1st Semester',
-                                style: GlobalFontSize.standard,
-                              ),
-                              const SizedBox(height: 16),
-                              TextButton(
-                                style: GlobalStyles.buttonStyle,
-                                onPressed: () {
-                                  context.go('/account');
-                                },
-                                child: ThemedText('View Account Details',
-                                    size: GlobalFontSize.button,
-                                    color: GlobalColor.shadeLight),
-                              ),
-                            ],
+                                const SizedBox(height: 16),
+                                TextButton(
+                                  style: GlobalStyles.buttonStyle,
+                                  onPressed: () {
+                                    if (context.mounted) {
+                                      context.go('/account');
+                                    }
+                                  },
+                                  child: ThemedText('View Account Details',
+                                      size: GlobalFontSize.button,
+                                      color: GlobalColor.shadeLight),
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-              const SizedBox(width: 16),
-
-              // Right: GWA Indicator
-              Expanded(
-                flex: 1,
-                child: CustomCard(
+                const SizedBox(width: 16),
+            
+                // Right: GWA Indicator
+                CustomCard(
                   child: Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: Column(
@@ -211,8 +212,8 @@ class Dashboard extends StatelessWidget {
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
           const SizedBox(height: 24),
 

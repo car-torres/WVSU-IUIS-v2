@@ -153,7 +153,7 @@ class _HomepageState extends State<Homepage> {
             child: Container(
               color: GlobalColor.gray,
               padding: const EdgeInsets.all(24),
-              child: _currentPage ?? _pages[0],
+              child: _currentPage ?? _pages['/dashboard'],
             )),
         SizedBox(
           width: 240,

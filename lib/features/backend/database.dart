@@ -1,37 +1,30 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-
 class Database {
   static final _db = FirebaseFirestore.instance;
 
-  static getUser(String id) async {
-    await _db.collection("students").get().then((event) {
-      for (var doc in event.docs) {
-        print("${doc.id} => ${doc.data()["firstname"]}");
-      }
-    });
-  }
+  static Future<DocumentSnapshot<Map<String, dynamic>>> getStudent(
+      String studentID) async {
+    final data = await findByID("students", studentID.toUpperCase());
 
-  static validateExistingStudentID(String studentID) async {
-    final event = await _db.collection("students")
-      .where("studentID", isEqualTo: studentID.toUpperCase())
-      .get();
-  
-    if (event.docs.isEmpty) {
-      return "Student ID Entry Invalid. It's either that your ID\ndoes not exist in the database, or you have\nentered the incorrect ID.";
+    if (!data.exists) {
+      throw ("Student ID Entry Invalid. It's either that your ID\ndoes not exist in the database, or you have\nentered the incorrect ID.");
     }
 
-    return event.docs[0];
+    return data;
   }
 
-  static Future<String?> validatePassword(String studentID, String password) async {
-    var student = await validateExistingStudentID(studentID);
+  static Future<String?> validatePassword(
+      String studentID, String password) async {
+    final DocumentSnapshot<Map<String, dynamic>> studentData;
 
-    if (student.runtimeType == String) {
-      return student;
+    try {
+      studentData = await getStudent(studentID);
+    } catch (e) {
+      return e.toString();
     }
 
-    final dbPassword = student.data()["password"];
+    final dbPassword = studentData.data()?["password"];
     if (dbPassword != password) {
       return "Password is incorrect.";
     }
@@ -39,17 +32,22 @@ class Database {
     return null;
   }
 
-  static Future<String?> update(String studentID, String field, String newValue) async {
-    var student = await validateExistingStudentID(studentID);
+  static Future<DocumentSnapshot<Map<String, dynamic>>> findByID(String collection, String id) async {
+    return await _db.collection(collection).doc(id).get();
+  }
 
-    if (student.runtimeType == String) {
-      return student;
+  static Future<String?> update(
+      String studentID, String field, String newValue) async {
+    final DocumentSnapshot<Map<String, dynamic>> studentData;
+
+    try {
+      studentData = await getStudent(studentID);
+    } catch (e) {
+      return e.toString();
     }
 
     try {
-      (student as QueryDocumentSnapshot).reference.update({
-        field: newValue
-      });
+      studentData.reference.update({field: newValue});
     } catch (e) {
       return e.toString();
     }

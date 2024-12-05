@@ -24,7 +24,7 @@ class _HomepageState extends State<Homepage> {
   bool _isExtended = false;
 
   final _pages = {
-    '/dashboard': const Dashboard(),
+    '/dashboard': const DashboardState(),
     '/account': const Account(),
     '/academics': const Academics(),
     '/enrollment': const Enrollment(),

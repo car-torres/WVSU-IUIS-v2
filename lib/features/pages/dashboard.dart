@@ -1,89 +1,104 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
+import 'dart:async';
 import 'dart:typed_data';
 import 'package:universal_html/html.dart' as html;
 import 'package:flutter/material.dart';
 // import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:go_router/go_router.dart';
+import 'package:wvsu_iuis_v2/features/backend/student_data.dart';
 import 'package:wvsu_iuis_v2/features/components/themed_text.dart';
 import 'package:wvsu_iuis_v2/features/theme.dart';
 import 'package:wvsu_iuis_v2/features/components/custom_card.dart';
 
-class Dashboard extends StatelessWidget {
+class Dashboard extends StatefulWidget {
   const Dashboard({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final List<Map<String, dynamic>> subjects = [
-      {
-        "code": "BA 234",
-        "description": "Technopreneurship",
-        "faculty": "John Doe",
-        "time": "1:00 PM - 2:30 PM",
-        "room": "ICT 302",
-        "units": 3
-      },
-      {
-        "code": "CC 206",
-        "description": "Applications Development",
-        "faculty": "Jane Smith",
-        "time": "1:00 PM - 4:00 PM",
-        "room": "ICT 206",
-        "units": 2
-      },
-      {
-        "code": "CC 208",
-        "description": "Methods of Research",
-        "faculty": "Frank Jones",
-        "time": "10:00 AM - 11:30 AM",
-        "room": "ICT 104",
-        "units": 3
-      },
-      {
-        "code": "CC 210",
-        "description": "Digital Circuits",
-        "faculty": "Emily Davis",
-        "time": "9:00 AM - 10:30 AM",
-        "room": "ICT 205",
-        "units": 3
-      },
-      {
-        "code": "CC 220",
-        "description": "Operating Systems",
-        "faculty": "Daniel Lee",
-        "time": "1:00 PM - 2:30 PM",
-        "room": "ICT 103",
-        "units": 3
-      },
-      {
-        "code": "CC 230",
-        "description": "Cybersecurity",
-        "faculty": "Sara Wilson",
-        "time": "2:30 PM - 4:00 PM",
-        "room": "ICT 302",
-        "units": 3
-      },
-      {
-        "code": "CC 240",
-        "description": "AI Fundamentals",
-        "faculty": "Michael Brown",
-        "time": "10:30 AM - 12:00 PM",
-        "room": "ICT 207",
-        "units": 3
-      },
-      {
-        "code": "CC 250",
-        "description": "Network Security",
-        "faculty": "Laura White",
-        "time": "8:00 AM - 9:30 AM",
-        "room": "ICT 202",
-        "units": 2
-      },
-    ];
+  State<StatefulWidget> createState() => DashboardState();
+}
 
-    final int totalUnits =
-        subjects.fold(0, (sum, subject) => sum + (subject["units"] as int));
+class DashboardState extends State<Dashboard> {
+  Future<List<dynamic>?>? _subjects;
+
+  @override
+  void initState() {
+    super.initState();
+    _subjects = StudentData().subjects;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // final List<Map<String, dynamic>> subjects = [
+    //   {
+    //     "code": "BA 234",
+    //     "description": "Technopreneurship",
+    //     "faculty": "John Doe",
+    //     "time": "1:00 PM - 2:30 PM",
+    //     "room": "ICT 302",
+    //     "units": 3
+    //   },
+    //   {
+    //     "code": "CC 206",
+    //     "description": "Applications Development",
+    //     "faculty": "Jane Smith",
+    //     "time": "1:00 PM - 4:00 PM",
+    //     "room": "ICT 206",
+    //     "units": 2
+    //   },
+    //   {
+    //     "code": "CC 208",
+    //     "description": "Methods of Research",
+    //     "faculty": "Frank Jones",
+    //     "time": "10:00 AM - 11:30 AM",
+    //     "room": "ICT 104",
+    //     "units": 3
+    //   },
+    //   {
+    //     "code": "CC 210",
+    //     "description": "Digital Circuits",
+    //     "faculty": "Emily Davis",
+    //     "time": "9:00 AM - 10:30 AM",
+    //     "room": "ICT 205",
+    //     "units": 3
+    //   },
+    //   {
+    //     "code": "CC 220",
+    //     "description": "Operating Systems",
+    //     "faculty": "Daniel Lee",
+    //     "time": "1:00 PM - 2:30 PM",
+    //     "room": "ICT 103",
+    //     "units": 3
+    //   },
+    //   {
+    //     "code": "CC 230",
+    //     "description": "Cybersecurity",
+    //     "faculty": "Sara Wilson",
+    //     "time": "2:30 PM - 4:00 PM",
+    //     "room": "ICT 302",
+    //     "units": 3
+    //   },
+    //   {
+    //     "code": "CC 240",
+    //     "description": "AI Fundamentals",
+    //     "faculty": "Michael Brown",
+    //     "time": "10:30 AM - 12:00 PM",
+    //     "room": "ICT 207",
+    //     "units": 3
+    //   },
+    //   {
+    //     "code": "CC 250",
+    //     "description": "Network Security",
+    //     "faculty": "Laura White",
+    //     "time": "8:00 AM - 9:30 AM",
+    //     "room": "ICT 202",
+    //     "units": 2
+    //   },
+    // ];
+
+    // final int totalUnits =
+    //     subjects.fold(0, (sum, subject) => sum + (subject["units"] as int));
 
     Future<void> downloadPage() async {
       final pdf = pw.Document();
@@ -286,15 +301,15 @@ class Dashboard extends StatelessWidget {
 
       final blob = html.Blob([pdfData]);
       final url = html.Url.createObjectUrlFromBlob(blob);
-      
+
       html.AnchorElement(href: url)
         ..target = '_blank'
         ..download = 'class_schedule.pdf'
         ..click();
-      
+
       html.Url.revokeObjectUrl(url);
 
-      if (context.mounted) {  
+      if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Schedule downloaded successfully!')),
         );
@@ -501,48 +516,54 @@ class Dashboard extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           CustomCard(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                children: [
-                  LayoutBuilder(
-                    builder: (context, constraints) {
-                      return SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: ConstrainedBox(
-                          constraints:
-                              BoxConstraints(minWidth: constraints.maxWidth),
-                          child: DataTable(
-                            columnSpacing: 16,
-                            columns: const [
-                              DataColumn(label: Text("Subject Code")),
-                              DataColumn(label: Text("Subject Description")),
-                              DataColumn(label: Text("Faculty")),
-                              DataColumn(label: Text("Time")),
-                              DataColumn(label: Text("Room")),
-                            ],
-                            rows: subjects
-                                .map(
-                                  (subject) => DataRow(
-                                    cells: [
-                                      DataCell(Text(subject["code"] as String)),
-                                      DataCell(Text(
-                                          subject["description"] as String)),
-                                      DataCell(
-                                          Text(subject["faculty"] as String)),
-                                      DataCell(Text(subject["time"] as String)),
-                                      DataCell(Text(subject["room"] as String)),
-                                    ],
-                                  ),
-                                )
-                                .toList(),
+            child: FutureBuilder<List<dynamic>?>(
+              future: _subjects,
+              builder: (BuildContext context,
+                  AsyncSnapshot<List<dynamic>?> snapshot) {
+                return Column(
+                  children: [
+                    LayoutBuilder(
+                      builder: (context, constraints) {
+                        return SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: ConstrainedBox(
+                            constraints:
+                                BoxConstraints(minWidth: constraints.maxWidth),
+                            child: DataTable(
+                              columnSpacing: 16,
+                              columns: const [
+                                DataColumn(label: Text("Subject Code")),
+                                DataColumn(label: Text("Subject Description")),
+                                DataColumn(label: Text("Faculty")),
+                                DataColumn(label: Text("Time")),
+                                DataColumn(label: Text("Room")),
+                              ],
+                              rows: _subjects
+                                  .map(
+                                    (subject) => DataRow(
+                                      cells: [
+                                        DataCell(
+                                            Text(subject["code"] as String)),
+                                        DataCell(Text(
+                                            subject["description"] as String)),
+                                        DataCell(
+                                            Text(subject["faculty"] as String)),
+                                        DataCell(
+                                            Text(subject["time"] as String)),
+                                        DataCell(
+                                            Text(subject["room"] as String)),
+                                      ],
+                                    ),
+                                  )
+                                  .toList(),
+                            ),
                           ),
-                        ),
-                      );
-                    },
-                  ),
-                ],
-              ),
+                        );
+                      },
+                    ),
+                  ],
+                );
+              },
             ),
           ),
         ],
